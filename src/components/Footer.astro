@@ -1,0 +1,27 @@
+---
+export interface Props {
+  instagramUrl?: string;
+}
+
+const { instagramUrl } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-stone-200 bg-stone-100 px-4 py-10 text-center text-sm text-stone-500">
+  {
+    instagramUrl && (
+      <a
+        href={instagramUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-amber-700 underline underline-offset-2"
+      >
+        Instagram
+      </a>
+    )
+  }
+  <p class="mt-4">
+    <a href="/privacy" class="underline underline-offset-2">プライバシーポリシー</a>
+  </p>
+  <p class="mt-2">&copy; {year} さんぷく</p>
+</footer>

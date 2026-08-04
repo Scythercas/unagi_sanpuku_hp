@@ -1,0 +1,42 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import TelLink from './TelLink.astro';
+
+export interface Props {
+  shopName: string;
+  tel: string;
+  heroImage?: ImageMetadata;
+  heroAlt?: string;
+}
+
+const { shopName, tel, heroImage, heroAlt } = Astro.props;
+---
+
+<section class="relative flex min-h-[70vh] items-end overflow-hidden bg-stone-900 text-white sm:min-h-[85vh]">
+  {
+    heroImage && (
+      <Image
+        src={heroImage}
+        alt={heroAlt ?? shopName}
+        widths={[400, 800, 1200, 1600]}
+        sizes="100vw"
+        loading="eager"
+        fetchpriority="high"
+        class="absolute inset-0 h-full w-full object-cover opacity-80"
+      />
+    )
+  }
+  <div class="relative z-10 mx-auto w-full max-w-5xl px-4 pb-12 pt-32 sm:pb-16">
+    <p class="text-sm tracking-[0.3em] text-amber-200">北高崎 うなぎ</p>
+    <h1 class="mt-2 font-serif text-4xl font-bold tracking-wide sm:text-6xl">{shopName}</h1>
+    <div class="mt-8">
+      <TelLink
+        tel={tel}
+        class="inline-flex items-center gap-2 rounded-full bg-amber-500 px-6 py-3 text-base font-semibold text-stone-900 shadow-lg transition hover:bg-amber-400"
+      >
+        {tel} に電話する
+      </TelLink>
+    </div>
+  </div>
+</section>

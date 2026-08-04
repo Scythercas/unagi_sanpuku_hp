@@ -1,0 +1,22 @@
+---
+export interface Props {
+  id?: string;
+  title?: string;
+  class?: string;
+}
+
+const { id, title, class: className } = Astro.props;
+---
+
+<section id={id} class:list={['px-4 py-16 sm:py-20', className]}>
+  <div class="mx-auto max-w-5xl">
+    {
+      title && (
+        <h2 class="mb-10 text-center font-serif text-2xl font-bold tracking-wide text-stone-900 sm:text-3xl">
+          {title}
+        </h2>
+      )
+    }
+    <slot />
+  </div>
+</section>

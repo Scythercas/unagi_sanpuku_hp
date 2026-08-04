@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sanpuku-unagi.com/sitemap-index.xml

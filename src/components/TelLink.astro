@@ -1,0 +1,22 @@
+---
+export interface Props {
+  tel: string;
+  class?: string;
+}
+
+const { tel, class: className } = Astro.props;
+const digits = tel.replace(/[^0-9+]/g, '');
+---
+
+<a href={`tel:${digits}`} class={className} data-tel-link>
+  <slot>{tel}</slot>
+</a>
+
+<script>
+  // 電話リンクのクリックを GA4 イベントとして計測する（サイト経由の電話件数が唯一意味のある指標）
+  document.querySelectorAll<HTMLAnchorElement>('[data-tel-link]').forEach((el) => {
+    el.addEventListener('click', () => {
+      window.gtag?.('event', 'click_tel');
+    });
+  });
+</script>

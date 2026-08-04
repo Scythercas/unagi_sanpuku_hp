@@ -1,0 +1,67 @@
+---
+import { Image } from 'astro:assets';
+import { MENU_CATEGORIES, type MenuItem } from '../lib/microcms';
+import { getLocalImage, imageMap } from '../lib/images';
+import Section from './Section.astro';
+
+export interface Props {
+  items: MenuItem[];
+}
+
+const { items } = Astro.props;
+
+const groups = MENU_CATEGORIES.map((category) => ({
+  category,
+  items: items.filter((item) => item.category === category),
+})).filter((group) => group.items.length > 0);
+
+function formatPrice(price: number) {
+  return `${price.toLocaleString('ja-JP')}円`;
+}
+---
+
+{
+  groups.length > 0 && (
+    <Section id="menu" title="メニュー">
+      <div class="space-y-14">
+        {groups.map((group) => (
+          <div>
+            <h3 class="mb-6 border-b border-amber-300 pb-2 font-serif text-xl font-semibold text-stone-900">
+              {group.category}
+            </h3>
+            <ul class="grid gap-8 sm:grid-cols-2">
+              {group.items.map((item) => {
+                const image = getLocalImage(imageMap.menu[item.id]?.localPath);
+                return (
+                  <li class="flex gap-4">
+                    {image && (
+                      <Image
+                        src={image}
+                        alt={item.name}
+                        widths={[200, 400]}
+                        sizes="120px"
+                        loading="lazy"
+                        class="h-24 w-24 flex-none rounded-lg object-cover"
+                      />
+                    )}
+                    <div>
+                      <div class="flex items-baseline justify-between gap-4">
+                        <p class="font-medium text-stone-900">{item.name}</p>
+                        <p class="whitespace-nowrap font-serif text-amber-700">
+                          {formatPrice(item.price)}
+                        </p>
+                      </div>
+                      {item.description && (
+                        <p class="mt-1 text-sm text-stone-600">{item.description}</p>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </Section>
+  )
+}

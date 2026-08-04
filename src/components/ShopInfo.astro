@@ -1,0 +1,71 @@
+---
+import type { Shop } from '../lib/microcms';
+import { GOOGLE_MAP_EMBED_SRC } from '../lib/config';
+import TelLink from './TelLink.astro';
+import Section from './Section.astro';
+
+export interface Props {
+  shop: Shop;
+}
+
+const { shop } = Astro.props;
+
+const seats = [
+  shop.seatsCounter ? `カウンター ${shop.seatsCounter}席` : null,
+  shop.seatsTable ? `テーブル ${shop.seatsTable}席` : null,
+]
+  .filter((v): v is string => Boolean(v))
+  .join(' / ');
+
+const rows: { label: string; value: string }[] = [
+  { label: '営業時間', value: shop.hours },
+  { label: '定休日', value: shop.closedDays },
+  { label: '住所', value: shop.address },
+  ...(shop.parking ? [{ label: '駐車場', value: shop.parking }] : []),
+  ...(seats ? [{ label: '席数', value: seats }] : []),
+  ...(shop.takeout !== undefined
+    ? [{ label: 'テイクアウト', value: shop.takeout ? '対応' : '非対応' }]
+    : []),
+  ...(shop.delivery !== undefined
+    ? [{ label: '出前', value: shop.delivery ? '対応' : '非対応' }]
+    : []),
+  ...(shop.accessNote ? [{ label: 'アクセス', value: shop.accessNote }] : []),
+];
+---
+
+<Section id="access" title="店舗情報">
+  <div class="grid gap-10 sm:grid-cols-2">
+    <dl class="divide-y divide-stone-200 text-sm sm:text-base">
+      {
+        rows.map((row) => (
+          <div class="grid grid-cols-3 gap-4 py-3">
+            <dt class="font-medium text-stone-500">{row.label}</dt>
+            <dd class="col-span-2 whitespace-pre-line text-stone-800">{row.value}</dd>
+          </div>
+        ))
+      }
+      <div class="grid grid-cols-3 gap-4 py-3">
+        <dt class="font-medium text-stone-500">電話</dt>
+        <dd class="col-span-2">
+          <TelLink tel={shop.tel} class="text-amber-700 underline underline-offset-2">
+            {shop.tel}
+          </TelLink>
+        </dd>
+      </div>
+    </dl>
+    {
+      GOOGLE_MAP_EMBED_SRC && (
+        <div class="overflow-hidden rounded-lg border border-stone-200">
+          <iframe
+            src={GOOGLE_MAP_EMBED_SRC}
+            class="h-72 w-full sm:h-full"
+            style="border:0"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title={`${shop.name}の地図`}
+          />
+        </div>
+      )
+    }
+  </div>
+</Section>

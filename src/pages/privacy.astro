@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Footer from '../components/Footer.astro';
+import { getShop } from '../lib/microcms';
+
+const shop = await getShop();
+const title = `プライバシーポリシー｜${shop.name}`;
+const description = `${shop.name}公式サイトにおける個人情報の取り扱いについて。`;
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="mx-auto max-w-2xl px-4 py-20">
+    <h1 class="mb-10 font-serif text-2xl font-bold text-stone-900 sm:text-3xl">
+      プライバシーポリシー
+    </h1>
+
+    <div class="space-y-8 text-sm leading-loose text-stone-700 sm:text-base">
+      <section>
+        <h2 class="mb-2 font-semibold text-stone-900">アクセス解析ツールについて</h2>
+        <p>
+          当サイトでは、サイトの利用状況を把握するために Google Analytics
+          を利用しています。Google Analytics はデータの収集のために Cookie
+          を使用しています。このデータは匿名で収集されており、個人を特定するものではありません。
+        </p>
+        <p class="mt-2">
+          この機能は Cookie
+          を無効にすることで収集を拒否することができますので、お使いのブラウザの設定をご確認ください。この規約に関しての詳細は
+          <a
+            href="https://marketingplatform.google.com/about/analytics/terms/jp/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-amber-700 underline underline-offset-2">Google アナリティクス利用規約</a
+          >
+          や
+          <a
+            href="https://policies.google.com/technologies/ads?hl=ja"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-amber-700 underline underline-offset-2">Google ポリシーと規約</a
+          >
+          をご覧ください。
+        </p>
+      </section>
+
+      <section>
+        <h2 class="mb-2 font-semibold text-stone-900">個人情報の利用目的</h2>
+        <p>
+          当サイトはお問い合わせフォームを設置しておりません。ご連絡はお電話または Instagram
+          にて承っております。
+        </p>
+      </section>
+
+      <section>
+        <h2 class="mb-2 font-semibold text-stone-900">お問い合わせ窓口</h2>
+        <p>本ポリシーに関するお問い合わせは、お電話にて{shop.name}までご連絡ください。</p>
+      </section>
+
+      <section>
+        <h2 class="mb-2 font-semibold text-stone-900">プライバシーポリシーの変更</h2>
+        <p>
+          当サイトは、個人情報に関して適用される法令を遵守するとともに、本ポリシーの内容を適宜見直し、その改善に努めます。
+        </p>
+      </section>
+    </div>
+  </div>
+
+  <Footer instagramUrl={shop.instagramUrl} />
+</BaseLayout>

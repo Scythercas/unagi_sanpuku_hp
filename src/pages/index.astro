@@ -1,0 +1,53 @@
+---
+import { getImage } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import StructuredData from '../components/StructuredData.astro';
+import Intro from '../components/Intro.astro';
+import Menu from '../components/Menu.astro';
+import Gallery from '../components/Gallery.astro';
+import ShopInfo from '../components/ShopInfo.astro';
+import Recruit from '../components/Recruit.astro';
+import News from '../components/News.astro';
+import Footer from '../components/Footer.astro';
+import { getGalleryList, getMenuList, getNewsList, getRecruit, getShop } from '../lib/microcms';
+import { getLocalImage, imageMap } from '../lib/images';
+
+const [shop, menu, gallery, recruit, news] = await Promise.all([
+  getShop(),
+  getMenuList(),
+  getGalleryList(),
+  getRecruit(),
+  getNewsList(),
+]);
+
+const heroGalleryItem = gallery.find((item) => item.type === '外観') ?? gallery[0];
+const heroImage = heroGalleryItem
+  ? getLocalImage(imageMap.gallery[heroGalleryItem.id]?.localPath)
+  : undefined;
+
+const ogImageUrl = heroImage
+  ? new URL(
+      (await getImage({ src: heroImage, width: 1200, height: 630, format: 'jpg' })).src,
+      Astro.site
+    ).toString()
+  : undefined;
+
+const title = `${shop.name}｜北高崎のうなぎ専門店`;
+const description =
+  shop.catchcopy ??
+  `群馬県高崎市（北高崎）のうなぎ専門店「${shop.name}」。落ち着いた雰囲気でうな重・うな丼をご提供しています。`;
+---
+
+<BaseLayout title={title} description={description} ogImageUrl={ogImageUrl}>
+  <StructuredData shop={shop} menu={menu} ogImageUrl={ogImageUrl} slot="head" />
+
+  <Hero shopName={shop.name} tel={shop.tel} heroImage={heroImage} heroAlt={shop.name} />
+  <Intro catchcopy={shop.catchcopy} />
+  <Menu items={menu} />
+  <Gallery items={gallery} />
+  <ShopInfo shop={shop} />
+  <Recruit recruit={recruit} />
+  <News items={news} />
+  <Footer instagramUrl={shop.instagramUrl} />
+</BaseLayout>

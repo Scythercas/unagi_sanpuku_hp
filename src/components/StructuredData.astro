@@ -1,0 +1,33 @@
+---
+import type { MenuItem, Shop } from '../lib/microcms';
+
+export interface Props {
+  shop: Shop;
+  menu: MenuItem[];
+  ogImageUrl?: string;
+}
+
+const { shop, menu, ogImageUrl } = Astro.props;
+
+const prices = menu.map((item) => item.price).filter((p): p is number => typeof p === 'number');
+const priceRange =
+  prices.length > 0
+    ? `¥${Math.min(...prices).toLocaleString('ja-JP')} 〜 ¥${Math.max(...prices).toLocaleString('ja-JP')}`
+    : undefined;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Restaurant',
+  name: shop.name,
+  ...(shop.catchcopy ? { description: shop.catchcopy } : {}),
+  address: shop.address,
+  telephone: shop.tel,
+  url: Astro.site?.toString(),
+  ...(ogImageUrl ? { image: ogImageUrl } : {}),
+  servesCuisine: 'うなぎ料理',
+  ...(priceRange ? { priceRange } : {}),
+  ...(shop.instagramUrl ? { sameAs: [shop.instagramUrl] } : {}),
+};
+---
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

@@ -1,0 +1,52 @@
+---
+import { Image } from 'astro:assets';
+import { GALLERY_TYPES, type GalleryItem } from '../lib/microcms';
+import { getLocalImage, imageMap } from '../lib/images';
+import Section from './Section.astro';
+
+export interface Props {
+  items: GalleryItem[];
+}
+
+const { items } = Astro.props;
+
+const groups = GALLERY_TYPES.map((type) => ({
+  type,
+  items: items.filter((item) => item.type === type),
+})).filter((group) => group.items.length > 0);
+---
+
+{
+  groups.length > 0 && (
+    <Section id="gallery" title="ギャラリー">
+      <div class="space-y-12">
+        {groups.map((group) => (
+          <div>
+            <h3 class="mb-4 font-serif text-lg font-semibold text-stone-900">{group.type}</h3>
+            <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {group.items.map((item) => {
+                const image = getLocalImage(imageMap.gallery[item.id]?.localPath);
+                if (!image) return null;
+                return (
+                  <li class="overflow-hidden rounded-lg">
+                    <Image
+                      src={image}
+                      alt={item.caption ?? group.type}
+                      widths={[400, 800]}
+                      sizes="(min-width: 640px) 33vw, 50vw"
+                      loading="lazy"
+                      class="aspect-[4/3] h-full w-full object-cover transition duration-300 hover:scale-105"
+                    />
+                    {item.caption && (
+                      <p class="mt-1 text-xs text-stone-500">{item.caption}</p>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </Section>
+  )
+}

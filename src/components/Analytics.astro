@@ -1,0 +1,23 @@
+---
+import { GA4_MEASUREMENT_ID } from '../lib/config';
+
+// {{GA4_MEASUREMENT_ID}} 未確定の間は誤計測を避けるためタグを出力しない
+const isConfigured = GA4_MEASUREMENT_ID !== 'G-XXXXXXX';
+---
+
+{
+  isConfigured && (
+    <>
+      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA4_MEASUREMENT_ID}`} />
+      <script is:inline define:vars={{ GA4_MEASUREMENT_ID }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', GA4_MEASUREMENT_ID);
+      </script>
+    </>
+  )
+}

@@ -1,0 +1,19 @@
+---
+import Section from './Section.astro';
+
+export interface Props {
+  catchcopy?: string;
+}
+
+const { catchcopy } = Astro.props;
+---
+
+{
+  catchcopy && (
+    <Section id="about">
+      <p class="mx-auto max-w-2xl text-center text-lg leading-loose text-stone-700 sm:text-xl">
+        {catchcopy}
+      </p>
+    </Section>
+  )
+}
