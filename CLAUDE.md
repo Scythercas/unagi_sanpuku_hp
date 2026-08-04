@@ -137,7 +137,37 @@ Astro 側の最適化：
 - [ ] Google マップ iframe が表示される（API キー不要の共有埋め込み）。
 - [ ] JSON-LD・OGP・sitemap・robots が出力される。
 - [ ] `.env` や秘密がコミットされていない。
-- [ ] Lighthouse で パフォーマンス／アクセシビリティが良好（写真主体でも LCP を意識）。
+- [ ] Lighthouse で パフォーマンス／アクセシビリティが良好(写真主体でも LCP を意識)。
+
+## Git 運用
+
+### ブランチ一覧
+
+| ブランチ | 役割 | 分岐元 | マージ先 | 直接コミット |
+|---|---|---|---|---|
+| `main` | 本番。常にリリース可能な状態 | — | — | 禁止 |
+| `develop` | 統合。次リリースの最新 | `main` | `main` | 禁止 |
+| `feature/xxx` | 機能追加 | `develop` | `develop` | 可 |
+| `fix/xxx` | 不具合修正(緊急でないもの) | `develop` | `develop` | 可 |
+| `refactor/xxx` | 挙動を変えない内部改善 | `develop` | `develop` | 可 |
+| `docs/xxx` | ドキュメントのみ | `develop` | `develop` | 可 |
+| `test/xxx` | テストの追加・修正 | `develop` | `develop` | 可 |
+| `env/xxx` | 環境構築・依存更新・設定 | `develop` | `develop` | 可 |
+| `chore/xxx` | 雑務(上記に当てはまらない) | `develop` | `develop` | 可 |
+| `ci/xxx` | GitHub Actions / ワークフロー | `develop` | `develop` | 可 |
+| `hotfix/xxx` | 本番の緊急修正 | `main` | `main` と `develop` の両方 | 可 |
+
+`main` / `develop` への直接コミットは禁止。作業は必ずトピックブランチを切って行う。
+
+### マージ方式
+
+すべてのマージで `--no-ff`(マージコミットを作る)を使う。**Squash merge は禁止。**
+
+理由: 本プロジェクトはマージ後もブランチを残す運用のため、Squash merge を使うと Git 上そのブランチが「未マージ」と判定され、再マージ時に同一変更が重複する。
+
+### コミット・リリースメッセージ
+
+接頭辞は上記のブランチ接頭辞と同一語彙を使う(`feature` / `fix` / `hotfix` / `refactor` / `docs` / `test` / `env` / `chore` / `ci`)。
 
 ## 参照
 
