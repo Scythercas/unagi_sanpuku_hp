@@ -1,5 +1,58 @@
 {
   "generatedAt": null,
   "menu": {},
-  "gallery": {}
+  "gallery": {
+    "gallery-exterior-1": {
+      "localPath": "/src/assets/images/gallery-exterior-1.jpg",
+      "alt": "さんぷく 店舗外観"
+    },
+    "gallery-exterior-2": {
+      "localPath": "/src/assets/images/gallery-exterior-2.jpg",
+      "alt": "さんぷく 店舗外観（通り側から）"
+    },
+    "gallery-exterior-3": {
+      "localPath": "/src/assets/images/gallery-exterior-3.jpg",
+      "alt": "さんぷく 店舗入口"
+    },
+    "gallery-exterior-4": {
+      "localPath": "/src/assets/images/gallery-exterior-4.jpg",
+      "alt": "さんぷく 店舗外観"
+    },
+    "gallery-exterior-5": {
+      "localPath": "/src/assets/images/gallery-exterior-5.jpg",
+      "alt": "さんぷく 店舗外観"
+    },
+    "gallery-exterior-6": {
+      "localPath": "/src/assets/images/gallery-exterior-6.jpg",
+      "alt": "さんぷく 店舗外観"
+    },
+    "gallery-exterior-7": {
+      "localPath": "/src/assets/images/gallery-exterior-7.jpg",
+      "alt": "さんぷく 店舗外観"
+    },
+    "gallery-interior-1": {
+      "localPath": "/src/assets/images/gallery-interior-1.jpg",
+      "alt": "さんぷく 店内座敷"
+    },
+    "gallery-interior-2": {
+      "localPath": "/src/assets/images/gallery-interior-2.jpg",
+      "alt": "さんぷく 店内"
+    },
+    "gallery-kitchen-1": {
+      "localPath": "/src/assets/images/gallery-kitchen-1.jpg",
+      "alt": "備長炭でうなぎを焼く様子"
+    },
+    "gallery-food-1": {
+      "localPath": "/src/assets/images/gallery-food-1.jpg",
+      "alt": "うな重"
+    },
+    "gallery-food-2": {
+      "localPath": "/src/assets/images/gallery-food-2.jpg",
+      "alt": "うなぎ料理"
+    },
+    "gallery-food-3": {
+      "localPath": "/src/assets/images/gallery-food-3.jpg",
+      "alt": "うなぎ料理"
+    }
+  }
 }

@@ -26,14 +26,16 @@ export type Shop = {
   delivery?: boolean;
   instagramUrl?: string;
   accessNote?: string;
+  notes?: string;
 };
 
 // --- API② menu（リスト形式） ---
 export const MENU_CATEGORIES = [
-  'うな重',
   'うな丼',
-  '宴会・コース',
+  'うな重',
+  '定食',
   '一品',
+  '宴会・コース',
   'テイクアウト',
   'ドリンク',
 ] as const;
