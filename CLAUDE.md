@@ -149,4 +149,6 @@ Astro 側の最適化：
 
 ## 未確定プレースホルダ（実装時に確定値へ置換）
 
-`{{DOMAIN}}`（既定 sanpuku-unagi.com・要確定）, `{{GITHUB_USERNAME}}`, `{{REPO_NAME}}`（既定 sanpuku-unagi）, `{{MICROCMS_SERVICE_DOMAIN}}`, `{{GA4_MEASUREMENT_ID}}`, 店舗の住所・電話・営業時間等（`docs/CONTENT-CHECKLIST.md` 参照）。
+`{{DOMAIN}}`（既定 sanpuku-unagi.com・要確定）, `{{MICROCMS_SERVICE_DOMAIN}}`, `{{GA4_MEASUREMENT_ID}}`, 店舗の住所・電話・営業時間等（`docs/CONTENT-CHECKLIST.md` 参照）。
+
+確定済み: `{{GITHUB_USERNAME}}` = `Scythercas`, `{{REPO_NAME}}` = `unagi_sanpuku_hp`（<https://github.com/Scythercas/unagi_sanpuku_hp>）。

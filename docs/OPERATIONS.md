@@ -16,7 +16,7 @@
 | CMS | microCMS `{{MICROCMS_SERVICE_DOMAIN}}` | 顧客（ご子息＝オーナー） | 開発者はメンバー |
 | 解析 | GA4 `{{GA4_MEASUREMENT_ID}}` | 顧客（Google） | 開発者は編集者 |
 | 地図/検索 | Google ビジネスプロフィール | 顧客（Google） | |
-| コード/ビルド | GitHub リポジトリ `{{GITHUB_USERNAME}}/{{REPO_NAME}}` | **開発者** | ご子息を Collaborator に追加 |
+| コード/ビルド | GitHub リポジトリ `Scythercas/unagi_sanpuku_hp` | **開発者** | ご子息を Collaborator に追加 |
 
 ## 2. 資格情報の置き場所マップ
 
@@ -36,7 +36,7 @@
 
 - ドメイン：`{{DOMAIN}}`
 - apex（`{{DOMAIN}}`）→ A レコード：`185.199.108.153` / `185.199.109.153` / `185.199.110.153` / `185.199.111.153`
-- `www` → CNAME：`{{GITHUB_USERNAME}}.github.io`
+- `www` → CNAME：`Scythercas.github.io`
 - GitHub Pages：Custom domain = `{{DOMAIN}}`、Enforce HTTPS = ON
 - **更新忘れが最大の事故要因**。自動更新 ON、カード有効、有効期限を管理下に。
 

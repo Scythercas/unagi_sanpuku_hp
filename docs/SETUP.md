@@ -10,7 +10,7 @@
 
 ## 1. リポジトリと Astro 雛形
 
-1. 開発者の個人アカウントに **public リポジトリ** `{{REPO_NAME}}`（既定 `sanpuku-unagi`）を作成。
+1. 開発者の個人アカウントに **public リポジトリ** `unagi_sanpuku_hp` を作成。
 2. Astro プロジェクトを作成し、Tailwind を導入（着手時点の公式手順に従う。バージョン・連携方法は要確認）。
 3. `.nvmrc`（Node バージョン）、`.gitignore`（`.env`, `node_modules`, `dist` 等）を用意。
 4. `astro.config.mjs` に `site: 'https://{{DOMAIN}}'` を設定。**`base` は設定しない**（apex 運用）。
@@ -48,7 +48,7 @@
 1. ★ドメイン `{{DOMAIN}}` を顧客のレジストラで取得（顧客名義・顧客カード）。**自動更新 ON**。
 2. ★DNS レコードを設定：
    - apex（`{{DOMAIN}}`）→ A レコード：`185.199.108.153` / `185.199.109.153` / `185.199.110.153` / `185.199.111.153`
-   - `www` → CNAME：`{{GITHUB_USERNAME}}.github.io`
+   - `www` → CNAME：`Scythercas.github.io`
 3. GitHub Pages 設定で Custom domain に `{{DOMAIN}}` を入力し、**Enforce HTTPS** をオン（証明書発行は DNS 浸透後に少し待つ）。
 4. `public/CNAME` に `{{DOMAIN}}` が入っていることを再確認（デプロイで独自ドメイン設定が消えないため）。
 5. apex / www の正規化（片方へリダイレクト）を決めて設定。

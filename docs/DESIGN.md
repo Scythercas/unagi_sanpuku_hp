@@ -94,7 +94,7 @@ microCMS の Hobby は **API 5 個まで**。以下ちょうど 5 個で確定�
 - ドメイン：`{{DOMAIN}}`（既定 `sanpuku-unagi.com`、Instagram の綴りと一致。**アンダースコアは不可**。要確定は `docs/CONTENT-CHECKLIST.md`）。
 - DNS（顧客レジストラ）：
   - apex（`{{DOMAIN}}`）→ GitHub Pages の A レコード 4 本（`185.199.108.153` / `.109.153` / `.110.153` / `.111.153`）。IPv6 の AAAA も併記可。
-  - `www` → `CNAME` で `{{GITHUB_USERNAME}}.github.io`。
+  - `www` → `CNAME` で `Scythercas.github.io`。
 - 正規 URL を apex か www のどちらかに統一し、もう一方はリダイレクト（重複 URL 回避）。
 - GitHub Pages 設定で **HTTPS 強制**。`public/CNAME` に独自ドメインを記載（デプロイで消えないようにする）。
 
