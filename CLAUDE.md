@@ -44,8 +44,8 @@
 ├─ public/
 │   ├─ CNAME                     # {{DOMAIN}} を記載
 │   ├─ robots.txt
-│   ├─ favicon.*
-│   ├─ fonts/                    # 自己ホストする筆文字フォント（woff2/ttf、店名表示用）
+│   ├─ favicon.svg / favicon.ico / apple-touch-icon.png  # 落款に見立てた店章（生成手順は後述）
+│   ├─ fonts/                    # 自己ホストするフォント（筆文字・見出し明朝サブセット）
 │   └─ videos/                   # ヒーロー動画（現状は仮動画。本番は店舗提供の調理動画に差し替え予定）
 ├─ scripts/
 │   └─ prebuild-images.mjs       # microCMS 画像をローカルへ取得（下記契約）
@@ -61,7 +61,8 @@
 │   ├─ components/                # Hero/Menu/Gallery/ShopInfo/Recruit/News/Footer/TabsScript 等
 │   └─ pages/
 │       ├─ index.astro           # メインの1ページ（セクション構成）
-│       └─ privacy.astro         # プライバシーポリシー（GA 利用のため必須）
+│       ├─ privacy.astro         # プライバシーポリシー（GA 利用のため必須）
+│       └─ 404.astro             # 404.html を出力（無いとソフト404になる。後述）
 ├─ .github/workflows/
 │   ├─ deploy.yml                # 本番（GitHub Pages）。push(main) / workflow_dispatch / microCMS Webhook
 │   └─ preview.yml               # 開発用プレビュー（Cloudflare Pages）。push(develop・トピックブランチ)
@@ -125,6 +126,16 @@ Astro 側の最適化：
 - 価格・電話番号・日付には `tabular-nums` を付けて桁を揃える。
 - タブやセクションの見出しはカタカナ（メニュー／ギャラリー）ではなく**和語**（お品書き／佇まい／店舗案内／求人）を使う。
 
+### 店章（favicon / apple-touch-icon）
+
+落款に見立てた店章。弁柄の地に、**ヒーローの店名と同じ筆文字 Yuji Boku の「さ」**を白抜きにしたもの。字形は `public/fonts/yuji-boku.ttf` から fontTools（Python）の `SVGPathPen` で SVG パスとして抽出し、`public/favicon.svg` に埋め込んである。
+
+- `favicon.svg` … 主。128四方の viewBox に字を中央配置（SVG は Y 下向きのため `scale(K, -K)` で反転させている）
+- `favicon.ico` … 旧ブラウザ用の代替。32×32 PNG を ICO コンテナに包んだもの
+- `apple-touch-icon.png` … 180×180。ホーム画面追加時に使われる
+
+`.ico` と `.png` は `favicon.svg` を sharp でラスタライズして生成する。**SVG を直したら 2 つとも作り直す**こと。
+
 ### 見出しフォントのサブセット
 
 本文はシステム明朝スタック（`--font-mincho`）で追加ダウンロードなし。見出しとタブのみ、しっぽり明朝を**表示に使う文字だけのサブセット**（`public/fonts/shippori-mincho-subset.woff2`、約14KB）で自己ホストする。
@@ -155,6 +166,8 @@ Astro 側の最適化：
 5. フッター（墨地。店名・住所・営業時間・**電話**・Instagram・コピーライト・プライバシーポリシー）
 
 `/privacy` に GA/Cookie に関するプライバシーポリシーを置く。
+
+`404.astro` は必ず置く。**これが無いと Cloudflare Pages は存在しない URL でトップページを HTTP 200 で返す**（ソフト404。任意の URL が重複コンテンツとして索引される）。`404.html` があれば GitHub Pages・Cloudflare Pages とも正しく 404 を返す。ページ自体は `noindex` にし、フッター経由で電話とトップへ戻れるようにする。
 
 ## 電話 CTA
 
