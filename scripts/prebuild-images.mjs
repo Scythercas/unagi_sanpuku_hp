@@ -1,6 +1,10 @@
 #!/usr/bin/env node
-// microCMS の gallery / menu 画像をビルド前にローカルへ取得する（CLAUDE.md 画像パイプライン契約）。
+// microCMS の gallery / menu / shop 画像をビルド前にローカルへ取得する（CLAUDE.md 画像パイプライン契約）。
 // 実行時に microCMS へアクセスさせないため、最終 HTML には microCMS の画像 URL を残さない。
+//
+// ⚠️ microCMS に画像フィールドを追加したら、必ずこのスクリプトの取得対象にも追加すること。
+//    ここに漏れると、その画像だけ microCMS の URL が最終 HTML に残り、
+//    20GB/月 の転送枠を訪問者のアクセスで消費してしまう（不変条件1）。
 
 import { createHash } from 'node:crypto';
 import { access, mkdir, writeFile } from 'node:fs/promises';
@@ -99,25 +103,41 @@ async function buildImageMap(list, altKey) {
   return map;
 }
 
+// shop はオブジェクト形式なので、画像フィールドをキー名で拾う。
+// 未作成／未入力のフィールドは undefined になるだけで、エラーにはしない。
+async function buildShopImageMap(shop) {
+  const map = {};
+  for (const [key, alt] of [
+    ['heroImage', shop.name ?? ''],
+    ['ownerImage', shop.ownerName ?? shop.name ?? ''],
+  ]) {
+    const result = await downloadImage(shop[key]);
+    if (result) map[key] = { ...result, alt };
+  }
+  return map;
+}
+
 async function main() {
   await mkdir(IMAGES_DIR, { recursive: true });
   await mkdir(path.dirname(IMAGE_MAP_PATH), { recursive: true });
 
-  const [{ contents: menuList }, { contents: galleryList }] = await Promise.all([
+  const [{ contents: menuList }, { contents: galleryList }, shop] = await Promise.all([
     client.getList({ endpoint: 'menu', queries: { limit: 100 } }),
     client.getList({ endpoint: 'gallery', queries: { limit: 100 } }),
+    client.getObject({ endpoint: 'shop' }),
   ]);
 
   const imageMap = {
     generatedAt: new Date().toISOString(),
     menu: await buildImageMap(menuList, 'name'),
     gallery: await buildImageMap(galleryList, 'caption'),
+    shop: await buildShopImageMap(shop),
   };
 
   await writeFile(IMAGE_MAP_PATH, `${JSON.stringify(imageMap, null, 2)}\n`);
 
   console.log(
-    `[prebuild-images] 完了: menu ${Object.keys(imageMap.menu).length}件 / gallery ${Object.keys(imageMap.gallery).length}件`
+    `[prebuild-images] 完了: menu ${Object.keys(imageMap.menu).length}件 / gallery ${Object.keys(imageMap.gallery).length}件 / shop ${Object.keys(imageMap.shop).length}件`
   );
 }
 

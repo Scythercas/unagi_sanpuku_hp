@@ -36,20 +36,20 @@ const rows: { label: string; value: string }[] = [
 ];
 ---
 
-<div class="grid gap-12 sm:grid-cols-2 sm:gap-10">
+<div class="grid gap-14 sm:grid-cols-2 sm:gap-12">
   <dl class="text-sm sm:text-base">
     {
       rows.map((row) => (
-        <div class="grid grid-cols-[6.5rem_1fr] gap-4 border-b border-kinari-line py-4">
-          <dt class="text-rikyu">{row.label}</dt>
-          <dd class="whitespace-pre-line text-sumi">{row.value}</dd>
+        <div class="grid grid-cols-[6.5rem_1fr] gap-4 border-b border-tetsu-line py-4">
+          <dt class="text-paper-dim">{row.label}</dt>
+          <dd class="whitespace-pre-line text-paper">{row.value}</dd>
         </div>
       ))
     }
-    <div class="grid grid-cols-[6.5rem_1fr] gap-4 border-b border-kinari-line py-4">
-      <dt class="text-rikyu">電話</dt>
+    <div class="grid grid-cols-[6.5rem_1fr] gap-4 border-b border-tetsu-line py-4">
+      <dt class="text-paper-dim">電話</dt>
       <dd>
-        <TelLink tel={shop.tel} class="text-lg text-bengara tabular-nums">
+        <TelLink tel={shop.tel} class="text-lg tabular-nums text-paper underline underline-offset-4">
           {shop.tel}
         </TelLink>
       </dd>
@@ -63,6 +63,6 @@ const rows: { label: string; value: string }[] = [
       loading="lazy"
       referrerpolicy="no-referrer-when-downgrade"
       title={`${shop.name}の地図`}
-    />
+    ></iframe>
   </div>
 </div>

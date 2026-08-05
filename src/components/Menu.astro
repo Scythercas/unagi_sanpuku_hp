@@ -1,82 +1,82 @@
 ---
-import { Image } from 'astro:assets';
-import type { MenuGroup } from '../lib/content';
+import type { MenuSplit } from '../lib/content';
+import { groupMenuByCategory } from '../lib/content';
 import { getLocalImage, imageMap } from '../lib/images';
-import TabsScript from './TabsScript.astro';
+import Photo from './Photo.astro';
 
 export interface Props {
-  groups: MenuGroup[];
+  split: MenuSplit;
 }
 
-const { groups } = Astro.props;
+const { split } = Astro.props;
 
 function formatPrice(price: number) {
   return `${price.toLocaleString('ja-JP')}円`;
 }
+
+// ダミー面に出す撮影指示。品目によって撮り方が違うので、そのまま撮影依頼として
+// 使えるよう具体的に書く（丼物に「湯気」、飲み物に「グラス」など）。
+function shootNoteFor(name: string, category: string) {
+  if (category === 'ドリンク') return `${name}（グラス単体・背景は暗めに）`;
+  if (category === '一品') return `${name}（皿ごと斜め上から）`;
+  return `${name}（蓋を開けた状態・真上から・湯気が見えると良い）`;
+}
+
+// 文字一覧側はカテゴリごとにまとめる（品数が増えたときに追える形にする）
+const restGroups = groupMenuByCategory(split.rest);
 ---
 
-<div data-tabs>
-  <div class="mb-12 flex flex-wrap gap-x-8 gap-y-3 border-b border-kinari-line" role="tablist">
-    {
-      groups.map((group, i) => (
-        <button
-          type="button"
-          role="tab"
-          id={`menu-tab-${group.category}`}
-          aria-controls={`menu-panel-${group.category}`}
-          aria-selected={i === 0 ? 'true' : 'false'}
-          data-tab-button
-          data-target={`menu-panel-${group.category}`}
-          class="tab -mb-px text-sm sm:text-base"
-        >
-          {group.category}
-        </button>
-      ))
-    }
-  </div>
-  {
-    groups.map((group, i) => (
-      <div
-        id={`menu-panel-${group.category}`}
-        role="tabpanel"
-        aria-labelledby={`menu-tab-${group.category}`}
-        data-tab-panel
-        hidden={i !== 0}
-      >
-        <ul class="space-y-8">
-          {group.items.map((item) => {
-            const image = getLocalImage(imageMap.menu[item.id]?.localPath);
-            return (
-              <li class="flex gap-5">
-                {image && (
-                  <Image
-                    src={image}
-                    alt={item.name}
-                    widths={[200, 400]}
-                    sizes="112px"
-                    loading="lazy"
-                    class="h-28 w-28 flex-none object-cover"
-                  />
-                )}
-                <div class="min-w-0 flex-1">
-                  {/* 品名 ‥‥‥ 価格 を実際のお品書きのようにリーダー罫で結ぶ */}
-                  <div class="flex items-baseline gap-2">
-                    <p class="text-lg text-sumi">{item.name}</p>
-                    <span class="leader" aria-hidden="true" />
-                    <p class="whitespace-nowrap text-lg text-bengara tabular-nums">
-                      {formatPrice(item.price)}
-                    </p>
-                  </div>
-                  {item.description && (
-                    <p class="mt-2 text-sm leading-relaxed text-rikyu">{item.description}</p>
-                  )}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+{/* 代表の品：写真と品名を左右交互に組み、1品ずつ大きく見せる */}
+{
+  split.featured.length > 0 && (
+    <ul class="space-y-20">
+      {split.featured.map((item, i) => (
+        <li class="items-center gap-10 sm:grid sm:grid-cols-2">
+          <Photo
+            image={getLocalImage(imageMap.menu[item.id]?.localPath)}
+            alt={item.name}
+            shootNote={shootNoteFor(item.name, item.category)}
+            aspect="aspect-[4/3]"
+            widths={[400, 800, 1200]}
+            sizes="(min-width: 640px) 50vw, 100vw"
+            class={i % 2 === 1 ? 'sm:order-2' : ''}
+          />
+          <div class="mt-6 sm:mt-0">
+            <h3 class="heading text-xl text-paper sm:text-2xl">{item.name}</h3>
+            <p class="mt-4 text-lg tabular-nums text-paper">{formatPrice(item.price)}</p>
+            {item.description && (
+              <p class="mt-5 whitespace-pre-line leading-[2.1] text-paper-dim">
+                {item.description}
+              </p>
+            )}
+          </div>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+{/* 残りの品：写真を使わず、価格の一覧性を優先する */}
+{
+  restGroups.length > 0 && (
+    <div class:list={[split.featured.length > 0 ? 'mt-28' : '']}>
+      <div class="grid gap-x-16 gap-y-12 sm:grid-cols-2">
+        {restGroups.map((group) => (
+          <div>
+            <h3 class="heading text-xs text-paper-dim">{group.category}</h3>
+            <ul class="mt-5">
+              {group.items.map((item) => (
+                <li class="flex items-baseline justify-between gap-4 border-b border-tetsu-line py-3.5">
+                  <span class="text-paper">{item.name}</span>
+                  <span class="whitespace-nowrap tabular-nums text-paper-dim">
+                    {formatPrice(item.price)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
-    ))
-  }
-</div>
-<TabsScript />
+    </div>
+  )
+}

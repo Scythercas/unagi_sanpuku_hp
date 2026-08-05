@@ -12,6 +12,8 @@ if (!serviceDomain || !apiKey) {
 export const client = createClient({ serviceDomain, apiKey });
 
 // --- API① shop（オブジェクト形式） ---
+// 末尾4つは写真主体デザイン向けの追加フィールド。microCMS 側で未作成でも
+// undefined になるだけで壊れないよう、すべて任意にしてある。
 export type Shop = {
   name: string;
   catchcopy?: string;
@@ -27,6 +29,10 @@ export type Shop = {
   instagramUrl?: string;
   accessNote?: string;
   notes?: string;
+  heroImage?: MicroCMSImage;
+  ownerMessage?: string;
+  ownerImage?: MicroCMSImage;
+  ownerName?: string;
 };
 
 // --- API② menu（リスト形式） ---
@@ -48,6 +54,8 @@ export type MenuItem = MicroCMSListContent & {
   description?: string;
   image?: MicroCMSImage;
   order: number;
+  // 写真付きで大きく見せる「推し」の品。microCMS 側で未作成なら undefined
+  isFeatured?: boolean;
 };
 
 // --- API③ gallery（リスト形式） ---

@@ -1,0 +1,61 @@
+---
+import type { ImageMetadata } from 'astro';
+import Photo from './Photo.astro';
+
+// ヒーロー直下の導入。catchcopy を見出し、ownerMessage を本文として扱う。
+// ownerMessage は microCMS 側で未作成でも成立するよう、無ければ見出しだけを出す。
+export interface Props {
+  catchcopy?: string;
+  ownerMessage?: string;
+  ownerName?: string;
+  ownerImage?: ImageMetadata;
+}
+
+const { catchcopy, ownerMessage, ownerName, ownerImage } = Astro.props;
+const hasMessage = Boolean(ownerMessage);
+---
+
+{
+  (catchcopy || hasMessage) && (
+    <section id="about" class="bg-tetsu px-5 py-24 sm:py-32">
+      <div class="mx-auto max-w-5xl">
+        <div class:list={['gap-14', hasMessage ? 'sm:grid sm:grid-cols-[1fr_18rem]' : '']}>
+          <div>
+            {catchcopy && (
+              <p class="heading whitespace-pre-line text-2xl leading-[1.7] text-paper sm:text-3xl">
+                {catchcopy}
+              </p>
+            )}
+            {hasMessage && (
+              <>
+                <div class="mt-10 h-px w-16 bg-tetsu-line" />
+                <p class="mt-10 whitespace-pre-line leading-[2.2] text-paper-dim">
+                  {ownerMessage}
+                </p>
+                {ownerName && (
+                  <p class="mt-8 text-sm text-paper-dim">
+                    店主　{ownerName}
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+
+          {hasMessage && (
+            <div class="mt-12 sm:mt-0">
+              <Photo
+                image={ownerImage}
+                alt={ownerName ? `店主 ${ownerName}` : '店主'}
+                shootNote="店主の人物写真（縦位置）"
+                aspect="aspect-[3/4]"
+                widths={[288, 576]}
+                sizes="(min-width: 640px) 18rem, 100vw"
+              />
+              <p class="mt-3 text-xs text-paper-dim">店主の言葉</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}

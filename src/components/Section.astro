@@ -1,52 +1,36 @@
 ---
 export interface Props {
   id?: string;
-  /** セクション見出し。デスクトップでは紙面の左端に縦書きで置かれる */
+  /** セクション見出し */
   label?: string;
-  /** 墨地のセクション（既定は生成りの紙面） */
-  dark?: boolean;
+  /** 一段沈めた地にする（区切りとして使う） */
+  deep?: boolean;
+  /** 横スクロール等で内側を画面幅いっぱいに使いたいとき、最大幅の枠を外す */
+  bleed?: boolean;
   class?: string;
 }
 
-const { id, label, dark = false, class: className } = Astro.props;
+const { id, label, deep = false, bleed = false, class: className } = Astro.props;
 ---
 
 <section
   id={id}
   class:list={[
-    'px-5 py-24 sm:py-32',
-    dark ? 'bg-sumi text-kinari' : 'bg-kinari text-sumi',
+    'py-24 sm:py-32',
+    bleed ? '' : 'px-5',
+    deep ? 'bg-tetsu-deep' : 'bg-tetsu',
     className,
   ]}
 >
-  <div class="mx-auto max-w-5xl">
+  <div class:list={[bleed ? '' : 'mx-auto max-w-5xl']}>
     {
-      label ? (
-        <div class="sm:flex sm:gap-10">
-          {/* 見出し：デスクトップは縦書きで左端、モバイルは横書きで上 */}
-          <div class="mb-8 flex-none sm:mb-0 sm:w-12">
-            <h2
-              class:list={[
-                'section-label section-label-vertical text-xl sm:text-2xl',
-                dark ? 'text-kinari' : 'text-sumi',
-              ]}
-            >
-              {label}
-            </h2>
-            <div
-              class:list={[
-                'mt-4 h-px w-12 sm:mt-6 sm:ml-[0.6em] sm:h-24 sm:w-px',
-                dark ? 'bg-sumi-line' : 'bg-kinari-line',
-              ]}
-            />
-          </div>
-          <div class="min-w-0 flex-1">
-            <slot />
-          </div>
+      label && (
+        <div class:list={['mb-14', bleed ? 'mx-auto max-w-5xl px-5' : '']}>
+          <h2 class="heading text-sm text-paper sm:text-base">{label}</h2>
+          <div class="mt-5 h-px w-full bg-tetsu-line" />
         </div>
-      ) : (
-        <slot />
       )
     }
+    <slot />
   </div>
 </section>

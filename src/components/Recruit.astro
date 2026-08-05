@@ -7,7 +7,7 @@ export interface Props {
 
 const { recruit } = Astro.props;
 
-// 店舗情報と同じ罫線の組みで揃える
+// 店舗案内と同じ罫線の組みで揃える
 const rows = [
   { label: '仕事内容', value: recruit.jobDescription },
   { label: '給与・時給', value: recruit.wage },
@@ -19,9 +19,9 @@ const rows = [
 <dl class="max-w-2xl text-sm sm:text-base">
   {
     rows.map((row) => (
-      <div class="grid grid-cols-[6.5rem_1fr] gap-4 border-b border-kinari-line py-4">
-        <dt class="text-rikyu">{row.label}</dt>
-        <dd class="whitespace-pre-line text-sumi">{row.value}</dd>
+      <div class="grid grid-cols-[6.5rem_1fr] gap-4 border-b border-tetsu-line py-4">
+        <dt class="text-paper-dim">{row.label}</dt>
+        <dd class="whitespace-pre-line text-paper">{row.value}</dd>
       </div>
     ))
   }

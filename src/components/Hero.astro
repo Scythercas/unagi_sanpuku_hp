@@ -1,59 +1,42 @@
 ---
-import { Image, getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
+import Photo from './Photo.astro';
 
 export interface Props {
   shopName: string;
   heroImage?: ImageMetadata;
-  heroAlt?: string;
 }
 
-const { shopName, heroImage, heroAlt } = Astro.props;
-
-// TODO: お店から提供された実際の調理動画に差し替える（docs/【さんぷく様HP製作】お店へのお願い.pdf 参照）
-const heroVideoSrc = '/videos/hero-cooking-placeholder.mp4';
-
-// 動画の読み込み完了までのポスター、および prefers-reduced-motion 時の代替に使う
-const posterSrc = heroImage
-  ? (await getImage({ src: heroImage, width: 1600, format: 'jpg' })).src
-  : undefined;
+const { shopName, heroImage } = Astro.props;
 ---
 
-<section class="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-sumi text-kinari">
-  <video
-    class="hero-video absolute inset-0 h-full w-full object-cover opacity-90"
-    autoplay
-    muted
-    loop
-    playsinline
-    preload="auto"
-    poster={posterSrc}
-  >
-    <source src={heroVideoSrc} type="video/mp4" />
-  </video>
+{/* 高さは画面の8割。下に次のセクションの頭を覗かせ、スクロールできることを示す */}
+<section class="relative h-[82svh] overflow-hidden bg-tetsu">
+  <Photo
+    image={heroImage}
+    alt={shopName}
+    shootNote="ヒーロー用：鰻を焼いている手元（横位置）"
+    aspect="h-full"
+    widths={[640, 1024, 1600, 2000]}
+    sizes="100vw"
+    loading="eager"
+    class="absolute inset-0"
+  />
 
-  {
-    heroImage && (
-      <Image
-        src={heroImage}
-        alt={heroAlt ?? shopName}
-        widths={[400, 800, 1200, 1600]}
-        sizes="100vw"
-        loading="eager"
-        fetchpriority="high"
-        class="hero-fallback-image absolute inset-0 h-full w-full object-cover opacity-90"
-      />
-    )
-  }
+  {/* 文字は写真に重ねない方針だが、店名だけは下端に置く。
+      写真の明暗に左右されないよう、地色へ確実に沈めてから載せる。 */}
+  <div class="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-tetsu to-transparent"></div>
 
-  <div class="absolute inset-0 bg-gradient-to-b from-sumi/60 via-sumi/25 to-sumi/80"></div>
+  <div class="absolute inset-x-0 bottom-0 px-5 pb-14">
+    <div class="mx-auto max-w-5xl">
+      <p class="heading text-[0.7rem] text-paper-dim sm:text-xs">北高崎 うなぎ</p>
+      <h1 class="shopname mt-4 text-4xl text-paper sm:text-6xl">{shopName}</h1>
+    </div>
+  </div>
 
-  <div class="hero-reveal relative z-10 px-5 text-center">
-    <p class="section-label text-xs text-sumi-weak sm:text-sm">北高崎 うなぎ</p>
-    {/* 紙面へ続く一本の罫。弁柄はここと本編の区切りだけに使う */}
-    <div class="mx-auto my-7 h-px w-10 bg-bengara"></div>
-    <h1 class="font-brush text-6xl leading-none tracking-wide sm:text-8xl">
-      {shopName}
-    </h1>
+  <div class="scroll-hint absolute inset-x-0 bottom-4 flex justify-center" aria-hidden="true">
+    <svg width="18" height="10" viewBox="0 0 18 10" fill="none" class="text-paper-dim">
+      <path d="M1 1l8 7 8-7" stroke="currentColor" stroke-width="1.5"></path>
+    </svg>
   </div>
 </section>

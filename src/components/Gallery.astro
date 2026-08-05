@@ -1,65 +1,65 @@
 ---
-import { Image } from 'astro:assets';
-import type { GalleryGroup } from '../lib/content';
+import type { GalleryItem } from '../lib/microcms';
+import { GALLERY_TYPES } from '../lib/microcms';
 import { getLocalImage, imageMap } from '../lib/images';
-import TabsScript from './TabsScript.astro';
+import Photo from './Photo.astro';
 
 export interface Props {
-  groups: GalleryGroup[];
+  items: GalleryItem[];
 }
 
-const { groups } = Astro.props;
+const { items } = Astro.props;
+
+// 種別の並び順（外観→内装→調理→料理）で見せる。タブは無いので、
+// 順番そのものが店の外から中へ入っていく流れになるよう並べ替える。
+const ordered = [...items].sort((a, b) => {
+  const byType = GALLERY_TYPES.indexOf(a.type) - GALLERY_TYPES.indexOf(b.type);
+  return byType !== 0 ? byType : a.order - b.order;
+});
+
+// 撮影待ちの枠。写真が増えたぶんだけ手前から埋まり、余った枠だけダミーで残る。
+const WANTED = [
+  { type: '外観', note: '外観（引きで建物全景）' },
+  { type: '内装', note: '座敷（人がいない状態で）' },
+  { type: '内装', note: 'カウンター席' },
+  { type: '調理', note: '焼き場の手元（寄り）' },
+  { type: '料理', note: 'うな重の蓋を開けたところ' },
+  { type: '料理', note: '一品料理の盛り付け' },
+] as const;
+
+const missingCount = Math.max(0, WANTED.length - ordered.length);
+const dummies = WANTED.slice(WANTED.length - missingCount);
 ---
 
-<div data-tabs>
-  <div class="mb-12 flex flex-wrap gap-x-8 gap-y-3 border-b border-kinari-line" role="tablist">
-    {
-      groups.map((group, i) => (
-        <button
-          type="button"
-          role="tab"
-          id={`gallery-tab-${group.type}`}
-          aria-controls={`gallery-panel-${group.type}`}
-          aria-selected={i === 0 ? 'true' : 'false'}
-          data-tab-button
-          data-target={`gallery-panel-${group.type}`}
-          class="tab -mb-px text-sm sm:text-base"
-        >
-          {group.type}
-        </button>
-      ))
-    }
-  </div>
+<div class="hscroll px-5 pb-4">
   {
-    groups.map((group, i) => (
-      <div
-        id={`gallery-panel-${group.type}`}
-        role="tabpanel"
-        aria-labelledby={`gallery-tab-${group.type}`}
-        data-tab-panel
-        hidden={i !== 0}
-      >
-        <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6">
-          {group.items.map((item) => {
-            const image = getLocalImage(imageMap.gallery[item.id]?.localPath);
-            if (!image) return null;
-            return (
-              <li>
-                <Image
-                  src={image}
-                  alt={item.caption ?? group.type}
-                  widths={[400, 800]}
-                  sizes="(min-width: 640px) 33vw, 50vw"
-                  loading="lazy"
-                  class="aspect-[4/3] w-full object-cover"
-                />
-                {item.caption && <p class="mt-2 text-xs text-rikyu">{item.caption}</p>}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+    ordered.map((item) => (
+      <figure class="w-[78vw] max-w-[26rem]">
+        <Photo
+          image={getLocalImage(imageMap.gallery[item.id]?.localPath)}
+          alt={item.caption ?? item.type}
+          shootNote={item.type}
+          aspect="aspect-[4/3]"
+          widths={[400, 800]}
+          sizes="(min-width: 640px) 26rem, 78vw"
+        />
+        <figcaption class="mt-3 flex items-baseline gap-3">
+          <span class="heading text-[0.65rem] text-paper-dim">{item.type}</span>
+          {item.caption && <span class="text-sm text-paper-dim">{item.caption}</span>}
+        </figcaption>
+      </figure>
     ))
   }
+  {
+    dummies.map((wanted) => (
+      <figure class="w-[78vw] max-w-[26rem]">
+        <Photo alt={wanted.note} shootNote={wanted.note} aspect="aspect-[4/3]" />
+        <figcaption class="mt-3">
+          <span class="heading text-[0.65rem] text-paper-dim">{wanted.type}</span>
+        </figcaption>
+      </figure>
+    ))
+  }
+  {/* 右端に余白を作り、最後の1枚が画面端に貼り付かないようにする */}
+  <div class="w-1" aria-hidden="true"></div>
 </div>
-<TabsScript />

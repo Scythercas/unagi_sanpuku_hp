@@ -3,7 +3,7 @@ import { getImage } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import StructuredData from '../components/StructuredData.astro';
-import Intro from '../components/Intro.astro';
+import OwnerMessage from '../components/OwnerMessage.astro';
 import Menu from '../components/Menu.astro';
 import Gallery from '../components/Gallery.astro';
 import ShopInfo from '../components/ShopInfo.astro';
@@ -11,10 +11,9 @@ import Recruit from '../components/Recruit.astro';
 import News from '../components/News.astro';
 import Footer from '../components/Footer.astro';
 import Section from '../components/Section.astro';
-import TabsScript from '../components/TabsScript.astro';
 import { getGalleryList, getMenuList, getNewsList, getRecruit, getShop } from '../lib/microcms';
 import { getLocalImage, imageMap } from '../lib/images';
-import { groupGalleryByType, groupMenuByCategory } from '../lib/content';
+import { splitFeaturedMenu } from '../lib/content';
 
 const [shop, menu, gallery, recruit, news] = await Promise.all([
   getShop(),
@@ -24,10 +23,14 @@ const [shop, menu, gallery, recruit, news] = await Promise.all([
   getNewsList(),
 ]);
 
-const heroGalleryItem = gallery.find((item) => item.type === '調理') ?? gallery[0];
-const heroImage = heroGalleryItem
-  ? getLocalImage(imageMap.gallery[heroGalleryItem.id]?.localPath)
-  : undefined;
+// ヒーローは shop.heroImage を正とする。microCMS 側で未作成／未入力なら、
+// 従来どおりギャラリーの「調理」→先頭 の順に代替する。
+const heroFallback = gallery.find((item) => item.type === '調理') ?? gallery[0];
+const heroImage =
+  getLocalImage(imageMap.shop?.heroImage?.localPath) ??
+  (heroFallback ? getLocalImage(imageMap.gallery[heroFallback.id]?.localPath) : undefined);
+
+const ownerImage = getLocalImage(imageMap.shop?.ownerImage?.localPath);
 
 const ogImageUrl = heroImage
   ? new URL(
@@ -41,68 +44,40 @@ const description =
   shop.catchcopy ??
   `群馬県高崎市（北高崎）のうなぎ専門店「${shop.name}」。落ち着いた雰囲気でうな重・うな丼をご提供しています。`;
 
-const menuGroups = groupMenuByCategory(menu);
-const galleryGroups = groupGalleryByType(gallery);
-
-// ラベルはカタカナ（メニュー/ギャラリー）ではなく和語に寄せ、老舗の語彙で統一する
-const sectionTabs = [
-  menuGroups.length > 0 ? { id: 'menu', label: 'お品書き' } : null,
-  galleryGroups.length > 0 ? { id: 'gallery', label: '佇まい' } : null,
-  { id: 'access', label: '店舗案内' },
-  recruit.isOpen ? { id: 'recruit', label: '求人' } : null,
-].filter((tab): tab is { id: string; label: string } => tab !== null);
+const menuSplit = splitFeaturedMenu(menu);
 ---
 
 <BaseLayout title={title} description={description} ogImageUrl={ogImageUrl}>
   <StructuredData shop={shop} menu={menu} ogImageUrl={ogImageUrl} slot="head" />
 
-  <Hero shopName={shop.name} heroImage={heroImage} heroAlt={shop.name} />
-  <Intro catchcopy={shop.catchcopy} />
+  <Hero shopName={shop.name} heroImage={heroImage} />
 
-  <Section>
-    <div data-tabs>
-      {/* 上位のセクションタブ。中央揃えをやめ、品書きの見出しのように左から並べる。
-          最上位の導線なので折り返させず、狭い画面でも必ず一列に収める。 */}
-      <div
-        class="mb-16 flex flex-nowrap gap-x-3 border-b border-kinari-line sm:gap-x-10"
-        role="tablist"
-      >
-        {
-          sectionTabs.map((tab, i) => (
-            <button
-              type="button"
-              role="tab"
-              id={`section-tab-${tab.id}`}
-              aria-controls={`section-panel-${tab.id}`}
-              aria-selected={i === 0 ? 'true' : 'false'}
-              data-tab-button
-              data-target={`section-panel-${tab.id}`}
-              class="tab -mb-px whitespace-nowrap text-base sm:text-lg"
-            >
-              {tab.label}
-            </button>
-          ))
-        }
-      </div>
-      {
-        sectionTabs.map((tab, i) => (
-          <div
-            id={`section-panel-${tab.id}`}
-            role="tabpanel"
-            aria-labelledby={`section-tab-${tab.id}`}
-            data-tab-panel
-            hidden={i !== 0}
-          >
-            {tab.id === 'menu' && <Menu groups={menuGroups} />}
-            {tab.id === 'gallery' && <Gallery groups={galleryGroups} />}
-            {tab.id === 'access' && <ShopInfo shop={shop} />}
-            {tab.id === 'recruit' && <Recruit recruit={recruit} />}
-          </div>
-        ))
-      }
-    </div>
+  <OwnerMessage
+    catchcopy={shop.catchcopy}
+    ownerMessage={shop.ownerMessage}
+    ownerName={shop.ownerName}
+    ownerImage={ownerImage}
+  />
+
+  <Section id="menu" label="お品書き" deep>
+    <Menu split={menuSplit} />
   </Section>
-  <TabsScript />
+
+  <Section id="gallery" label="佇まい" bleed>
+    <Gallery items={gallery} />
+  </Section>
+
+  <Section id="access" label="店舗案内" deep>
+    <ShopInfo shop={shop} />
+  </Section>
+
+  {
+    recruit.isOpen && (
+      <Section id="recruit" label="求人">
+        <Recruit recruit={recruit} />
+      </Section>
+    )
+  }
 
   <News items={news} />
   <Footer shop={shop} />
