@@ -45,6 +45,7 @@
 | CI/CD | GitHub Actions | microCMS の GitHub Actions Webhook 連携が標準対応。push / 手動 / CMS更新 で起動。 |
 | 解析 | Google Analytics 4（無料） | 顧客希望。gtag を head に設置。 |
 | 地図 | Google マップ共有 iframe | **API キー・課金アカウント不要**。Maps JS API は使わない（2025 の料金改定で誤用時に課金リスクがあるため）。 |
+| プレビュー | Cloudflare Pages（無料・開発用） | `develop`／トピックブランチを実 URL（`<branch>.sanpuku-unagi-preview.pages.dev`）で確認するための**開発者専用**環境。本番の GitHub Pages 配信とは完全に独立し、顧客向け資産ではない。`.github/workflows/preview.yml`。 |
 
 ## 5. 所有・管理の分離（案2を採用）
 
@@ -88,6 +89,7 @@ microCMS の Hobby は **API 5 個まで**。以下ちょうど 5 個で確定�
 - **`workflow_dispatch`**：手動再ビルド（緊急時）。
 - 認証：microCMS の Webhook に **単一リポジトリに絞った fine-grained PAT** を設定。トークンは開発者名義（引き継ぎ時に差し替え）。
 - Node バージョンを `.nvmrc` で固定、lockfile をコミット、Actions のバージョンをタグ固定して**長期再現性**を担保。
+- 上記は本番（GitHub Pages）向け。別途 `develop`／トピックブランチへの push で `.github/workflows/preview.yml` が起動し、Cloudflare Pages へブランチ別プレビューをデプロイする。これは開発者がデザイン差分を実 URL で確認するためだけの仕組みで、本番のデプロイ経路・Secrets とは独立している。
 
 ## 9. ドメイン・DNS・HTTPS
 

@@ -13,8 +13,8 @@
 |---|---|---|---|
 | 独自ドメイン | レジストラ：______ | 顧客 | 自動更新 ON。有効期限：____ |
 | DNS | 上記レジストラ | 顧客 | apex A レコード4本 / www CNAME |
-| CMS | microCMS `{{MICROCMS_SERVICE_DOMAIN}}` | 顧客（ご子息＝オーナー） | 開発者はメンバー |
-| 解析 | GA4 `{{GA4_MEASUREMENT_ID}}` | 顧客（Google） | 開発者は編集者 |
+| CMS | microCMS `unagisanpuku` | 顧客（ご子息＝オーナー） | 開発者はメンバー |
+| 解析 | GA4 `G-X7TDGRCV1T` | 顧客（Google） | 開発者は編集者 |
 | 地図/検索 | Google ビジネスプロフィール | 顧客（Google） | |
 | コード/ビルド | GitHub リポジトリ `Scythercas/unagi_sanpuku_hp` | **開発者** | ご子息を Collaborator に追加 |
 
@@ -24,7 +24,7 @@
 - **CMS→GitHub 連携トークン（fine-grained PAT）** … microCMS の各 API の Webhook 設定内。開発者名義・**当該リポジトリ 1 つ限定**。
 - **ローカル開発用の値** … 開発者ローカルの `.env`（Git 管理外）。
 - **DNS レコードの内容** … 本書「4. ドメイン・DNS」に記載。
-- **GA4 測定 ID** … 秘密ではない。head の gtag、または `docs/DESIGN.md` に記載。
+- **GA4 測定 ID** … 秘密ではない。`src/lib/config.ts` にハードコード（現在値 `G-X7TDGRCV1T`）。
 
 ## 3. ビルドの起動方法
 

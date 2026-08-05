@@ -6,8 +6,9 @@
 
 - **Astro（静的出力）+ Tailwind CSS**（React は使わない）
 - **microCMS**（Hobby 無料・顧客所有）でコンテンツ管理
-- **GitHub Pages**（public リポジトリ）＋独自ドメイン＋自動 HTTPS
+- **GitHub Pages**（public リポジトリ）＋独自ドメイン＋自動 HTTPS（本番）
 - **GitHub Actions** でビルド／デプロイ（push・手動・microCMS Webhook）
+- **Cloudflare Pages**（開発者用プレビュー。`develop`・トピックブランチを実 URL で確認。本番とは独立）
 - **Google Analytics 4**、地図は Google マップ共有 iframe（API キー不要）
 - 画像は**ビルド前にローカル取得して最適化**（microCMS URL を最終 HTML に残さない）
 
@@ -37,6 +38,7 @@ MICROCMS_API_KEY=xxxxxxxx         # GET 専用キー
 | `docs/SETUP.md` | 環境構築手順（ゼロ→公開） |
 | `docs/OPERATIONS.md` | 運用引き継ぎ書（アカウント・バックアップ・移管） |
 | `docs/CONTENT-CHECKLIST.md` | 顧客確認・素材の未確定事項 |
+| `docs/CONTENT-DRAFT.md` | microCMS 投入用コンテンツ下書きと入力進捗 |
 
 ## 重要な約束事（詳細は CLAUDE.md）
 
