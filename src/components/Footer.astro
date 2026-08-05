@@ -1,27 +1,53 @@
 ---
+import type { Shop } from '../lib/microcms';
+import TelLink from './TelLink.astro';
+
 export interface Props {
-  instagramUrl?: string;
+  shop: Shop;
 }
 
-const { instagramUrl } = Astro.props;
+const { shop } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
-<footer class="border-t border-stone-200 bg-stone-100 px-4 py-10 text-center text-sm text-stone-500">
-  {
-    instagramUrl && (
-      <a
-        href={instagramUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-amber-700 underline underline-offset-2"
-      >
-        Instagram
-      </a>
-    )
-  }
-  <p class="mt-4">
-    <a href="/privacy" class="underline underline-offset-2">プライバシーポリシー</a>
-  </p>
-  <p class="mt-2">&copy; {year} さんぷく</p>
+{/* 墨地の締め。電話は最も重要な導線なので、どのページからも必ず届くようここに置く */}
+<footer class="bg-sumi px-5 py-20 text-kinari">
+  <div class="mx-auto max-w-5xl">
+    <div class="flex flex-col gap-12 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <p class="font-brush text-4xl leading-none">{shop.name}</p>
+        <p class="mt-6 text-sm leading-relaxed text-sumi-weak">{shop.address}</p>
+        <p class="mt-2 whitespace-pre-line text-sm leading-relaxed text-sumi-weak">
+          {shop.hours}
+        </p>
+        <p class="mt-2 text-sm text-sumi-weak">定休日　{shop.closedDays}</p>
+      </div>
+
+      <div class="sm:text-right">
+        <p class="text-xs tracking-[0.3em] text-sumi-weak">ご予約・お問い合わせ</p>
+        <TelLink tel={shop.tel} class="mt-3 block text-3xl tabular-nums text-kinari">
+          {shop.tel}
+        </TelLink>
+        {
+          shop.instagramUrl && (
+            <a
+              href={shop.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-6 inline-block border-b border-sumi-line pb-1 text-sm text-sumi-weak transition hover:text-kinari"
+            >
+              Instagram
+            </a>
+          )
+        }
+      </div>
+    </div>
+
+    <div
+      class="mt-16 flex flex-col gap-3 border-t border-sumi-line pt-8 text-xs text-sumi-weak sm:flex-row sm:justify-between"
+    >
+      <p>&copy; {year} {shop.name}</p>
+      <a href="/privacy" class="transition hover:text-kinari">プライバシーポリシー</a>
+    </div>
+  </div>
 </footer>

@@ -105,6 +105,36 @@ Astro 側の最適化：
 - ファーストビュー外は `loading="lazy"`、ヒーロー1枚のみ `loading="eager"` + `fetchpriority="high"`。
 - AVIF は初版では入れない（ビルド時間増に対し効果限定的）。必要になれば `<Picture formats={['avif','webp']}>` で追加。
 
+## デザイン（老舗の意匠）
+
+方針は「墨と生成り」。暖簾をくぐって明るい座敷に入る構成を、地色の切り替えで表現する。トークンは `src/styles/global.css` の `@theme` に集約し、コンポーネントは必ずトークン名（`bg-sumi` / `text-bengara` 等）で参照する。**生の hex やデフォルトの Tailwind パレット（`stone-*` / `amber-*`）を直接書かない。**
+
+| トークン | 値 | 用途 |
+|---|---|---|
+| `sumi` | `#1a1714` | 墨。ヒーローとフッターの地 |
+| `kinari` | `#fbf9f4` | 生成り。情報部の紙面 |
+| `bengara` | `#8c3a2b` | 弁柄（高崎神社の格子の色）。価格・現在地・リンクのみ。**使用面積は全体の3%以下** |
+| `rikyu` | `#7d7a6e` | 利休鼠。ラベル・キャプション |
+
+意匠上の決めごと：
+
+- **角丸を使わない**（`rounded-*` を書かない）。写真も影なし・直角。
+- タブはピルではなく**罫線タブ**。選択状態は `aria-selected` だけで表現し、見た目は `.tab[aria-selected="true"]` が担う。**JS でクラスを付け替えない**（マークアップとスクリプトの二重管理を避けるため）。
+- セクション見出しは `Section.astro` の `label` に渡す。デスクトップは縦書き（`writing-mode: vertical-rl`）、640px 未満は横書きに切り替わる。
+- メニューは「お品書き」として、品名 ‥‥ 価格 を `.leader`（点線）で結ぶ。
+- 価格・電話番号・日付には `tabular-nums` を付けて桁を揃える。
+- タブやセクションの見出しはカタカナ（メニュー／ギャラリー）ではなく**和語**（お品書き／佇まい／店舗案内／求人）を使う。
+
+### 見出しフォントのサブセット
+
+本文はシステム明朝スタック（`--font-mincho`）で追加ダウンロードなし。見出しとタブのみ、しっぽり明朝を**表示に使う文字だけのサブセット**（`public/fonts/shippori-mincho-subset.woff2`、約14KB）で自己ホストする。
+
+**見出し・タブの文言を増やしたら再生成が必要**（未収録の文字はシステム明朝にフォールバックし、字面が混ざる）。手順：
+
+1. `src/pages/index.astro` の `sectionTabs`、`MENU_CATEGORIES`、`GALLERY_TYPES`、ヒーローの小見出し、下層ページ見出しに含まれる文字を集める。
+2. Google Fonts の `css2?family=Shippori+Mincho:wght@500&text=<文字列>` を取得し、`url(...)` の woff2 を `public/fonts/shippori-mincho-subset.woff2` へ保存。
+3. 併せて返る `unicode-range` を `global.css` の `@font-face` にそのまま反映する。
+
 ## microCMS 取得（src/lib/microcms.ts）
 
 - `createClient({ serviceDomain, apiKey })` を使う。
@@ -116,19 +146,21 @@ Astro 側の最適化：
 
 1. ヒーロー：5秒ほどの調理動画イントロ→筆文字フォント（自己ホスト WOFF2）で店名を大きくリビール。スクロールすればいつでも待たずに下へ進める（動画は CSS アニメーションのみで暗転・リビールし、JS 不使用）。**電話 CTA ボタンはヒーローには置かない**。`prefers-reduced-motion` 時は動画の代わりに静止画＋店名を最初から表示。
 2. 一言紹介（`shop.catchcopy`。空なら非表示）
-3. メニュー／ギャラリー／店舗情報／採用情報を**セクション単位のタブで切り替え**（`data-tabs` 属性＋`TabsScript.astro` の素の JS。ネストしたタブも `closest('[data-tabs]')` で自グループのみ制御）。存在しない・非公開のタブはそもそも生成しない：
-   - メニュー：`menu` をカテゴリでグルーピングし、内部にもカテゴリ別タブを持つ。価格は数値を「1,800円」等に整形。
-   - ギャラリー：`gallery` を種別（外観/内装/調理/料理）でグルーピングし、内部にも種別タブを持つ。
-   - 店舗情報：住所・営業時間・定休日・駐車場・席数、Google マップ iframe、`tel:` リンク。
-   - 採用情報：`recruit.isOpen` が true のときのみタブ自体を表示。
+3. お品書き／佇まい／店舗案内／求人を**セクション単位のタブで切り替え**（`data-tabs` 属性＋`TabsScript.astro` の素の JS。ネストしたタブも `closest('[data-tabs]')` で自グループのみ制御）。存在しない・非公開のタブはそもそも生成しない：
+   - お品書き：`menu` をカテゴリでグルーピングし、内部にもカテゴリ別タブを持つ。価格は数値を「1,800円」等に整形。
+   - 佇まい：`gallery` を種別（外観/内装/調理/料理）でグルーピングし、内部にも種別タブを持つ。
+   - 店舗案内：住所・営業時間・定休日・駐車場・席数、Google マップ iframe、`tel:` リンク。
+   - 求人：`recruit.isOpen` が true のときのみタブ自体を表示。
 4. お知らせ（`news`。臨時休業等。空なら非表示）
-5. フッター（Instagram リンク、コピーライト、プライバシーポリシーへのリンク）
+5. フッター（墨地。店名・住所・営業時間・**電話**・Instagram・コピーライト・プライバシーポリシー）
 
 `/privacy` に GA/Cookie に関するプライバシーポリシーを置く。
 
 ## 電話 CTA
 
-電話番号は `tel:` リンク（`TelLink.astro`）にする。ヒーローには置かず、**店舗情報タブ内にのみ**表示する。クリックを **GA4 のイベント**（`click_tel`）として計測できるようクリックリスナーで `gtag('event', 'click_tel')` を発火。「サイト経由で電話に繋がった数」が唯一意味のある指標。
+電話番号は `tel:` リンク（`TelLink.astro`）にする。設置箇所は**店舗案内タブ内**と**フッター**の2か所。ヒーローには置かない（動画→店名のリビールを妨げるため）。フッターは全ページ共通なので、`/privacy` からも電話に到達できる。
+
+クリックを **GA4 のイベント**（`click_tel`）として計測できるようクリックリスナーで `gtag('event', 'click_tel')` を発火。「サイト経由で電話に繋がった数」が唯一意味のある指標。
 
 ## SEO / 集客の土台（初版から入れる）
 
@@ -140,7 +172,7 @@ Astro 側の最適化：
 ## Definition of Done（実装完了の条件）
 
 - [ ] `npm run build` がクリーンに通り、`dist/` に静的サイトが出る。
-- [ ] ビルド後の HTML/CSS に **microCMS の画像 URL が一切含まれない**（`grep microcms dist -r` で確認）。
+- [ ] ビルド後の HTML/CSS に **microCMS の画像 URL が一切含まれない**。確認は配信ドメインで行う：`grep -rn "microcms-assets\.io\|\.microcms\.io" dist/` が空であること。**単に `grep microcms dist -r` とすると、ローカルの CSS バンドル名 `_astro/microcms.*.css`（`src/lib/microcms.ts` 由来のチャンク名）に当たって誤検知する。**
 - [ ] 全画像に width/height があり、CLS が出ない。ヒーロー以外は lazy。
 - [ ] `recruit.isOpen=false` / `news` 空 のとき該当セクションが消える。
 - [ ] 電話番号が `tel:` リンクで、GA イベントが発火する。

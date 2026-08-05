@@ -6,39 +6,23 @@ export interface Props {
 }
 
 const { recruit } = Astro.props;
+
+// 店舗情報と同じ罫線の組みで揃える
+const rows = [
+  { label: '仕事内容', value: recruit.jobDescription },
+  { label: '給与・時給', value: recruit.wage },
+  { label: '勤務時間', value: recruit.shift },
+  { label: '応募方法', value: recruit.howToApply },
+].filter((row): row is { label: string; value: string } => Boolean(row.value));
 ---
 
-<div class="mx-auto max-w-2xl space-y-6 text-stone-700">
+<dl class="max-w-2xl text-sm sm:text-base">
   {
-    recruit.jobDescription && (
-      <div>
-        <h3 class="mb-1 font-semibold text-stone-900">仕事内容</h3>
-        <p class="whitespace-pre-line">{recruit.jobDescription}</p>
+    rows.map((row) => (
+      <div class="grid grid-cols-[6.5rem_1fr] gap-4 border-b border-kinari-line py-4">
+        <dt class="text-rikyu">{row.label}</dt>
+        <dd class="whitespace-pre-line text-sumi">{row.value}</dd>
       </div>
-    )
+    ))
   }
-  {
-    recruit.wage && (
-      <div>
-        <h3 class="mb-1 font-semibold text-stone-900">給与・時給</h3>
-        <p class="whitespace-pre-line">{recruit.wage}</p>
-      </div>
-    )
-  }
-  {
-    recruit.shift && (
-      <div>
-        <h3 class="mb-1 font-semibold text-stone-900">勤務時間・シフト</h3>
-        <p class="whitespace-pre-line">{recruit.shift}</p>
-      </div>
-    )
-  }
-  {
-    recruit.howToApply && (
-      <div>
-        <h3 class="mb-1 font-semibold text-stone-900">応募方法</h3>
-        <p class="whitespace-pre-line">{recruit.howToApply}</p>
-      </div>
-    )
-  }
-</div>
+</dl>

@@ -16,7 +16,7 @@ function formatPrice(price: number) {
 ---
 
 <div data-tabs>
-  <div class="mb-8 flex flex-wrap justify-center gap-2" role="tablist">
+  <div class="mb-12 flex flex-wrap gap-x-8 gap-y-3 border-b border-kinari-line" role="tablist">
     {
       groups.map((group, i) => (
         <button
@@ -27,12 +27,7 @@ function formatPrice(price: number) {
           aria-selected={i === 0 ? 'true' : 'false'}
           data-tab-button
           data-target={`menu-panel-${group.category}`}
-          class:list={[
-            'rounded-full border px-4 py-1.5 text-sm font-medium transition',
-            i === 0
-              ? ['border-amber-500', 'bg-amber-500', 'text-stone-900']
-              : ['border-stone-300', 'text-stone-600'],
-          ]}
+          class="tab -mb-px text-sm sm:text-base"
         >
           {group.category}
         </button>
@@ -48,30 +43,32 @@ function formatPrice(price: number) {
         data-tab-panel
         hidden={i !== 0}
       >
-        <ul class="grid gap-8 sm:grid-cols-2">
+        <ul class="space-y-8">
           {group.items.map((item) => {
             const image = getLocalImage(imageMap.menu[item.id]?.localPath);
             return (
-              <li class="flex gap-4">
+              <li class="flex gap-5">
                 {image && (
                   <Image
                     src={image}
                     alt={item.name}
                     widths={[200, 400]}
-                    sizes="120px"
+                    sizes="112px"
                     loading="lazy"
-                    class="h-24 w-24 flex-none rounded-lg object-cover"
+                    class="h-28 w-28 flex-none object-cover"
                   />
                 )}
-                <div>
-                  <div class="flex items-baseline justify-between gap-4">
-                    <p class="font-medium text-stone-900">{item.name}</p>
-                    <p class="whitespace-nowrap font-serif text-amber-700">
+                <div class="min-w-0 flex-1">
+                  {/* 品名 ‥‥‥ 価格 を実際のお品書きのようにリーダー罫で結ぶ */}
+                  <div class="flex items-baseline gap-2">
+                    <p class="text-lg text-sumi">{item.name}</p>
+                    <span class="leader" aria-hidden="true" />
+                    <p class="whitespace-nowrap text-lg text-bengara tabular-nums">
                       {formatPrice(item.price)}
                     </p>
                   </div>
                   {item.description && (
-                    <p class="mt-1 text-sm text-stone-600">{item.description}</p>
+                    <p class="mt-2 text-sm leading-relaxed text-rikyu">{item.description}</p>
                   )}
                 </div>
               </li>

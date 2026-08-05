@@ -44,11 +44,12 @@ const description =
 const menuGroups = groupMenuByCategory(menu);
 const galleryGroups = groupGalleryByType(gallery);
 
+// ラベルはカタカナ（メニュー/ギャラリー）ではなく和語に寄せ、老舗の語彙で統一する
 const sectionTabs = [
-  menuGroups.length > 0 ? { id: 'menu', label: 'メニュー' } : null,
-  galleryGroups.length > 0 ? { id: 'gallery', label: 'ギャラリー' } : null,
-  { id: 'access', label: '店舗情報' },
-  recruit.isOpen ? { id: 'recruit', label: '採用情報' } : null,
+  menuGroups.length > 0 ? { id: 'menu', label: 'お品書き' } : null,
+  galleryGroups.length > 0 ? { id: 'gallery', label: '佇まい' } : null,
+  { id: 'access', label: '店舗案内' },
+  recruit.isOpen ? { id: 'recruit', label: '求人' } : null,
 ].filter((tab): tab is { id: string; label: string } => tab !== null);
 ---
 
@@ -60,7 +61,11 @@ const sectionTabs = [
 
   <Section>
     <div data-tabs>
-      <div class="mb-10 flex flex-wrap justify-center gap-2" role="tablist">
+      {/* 上位のセクションタブ。中央揃えをやめ、品書きの見出しのように左から並べる */}
+      <div
+        class="mb-16 flex flex-wrap gap-x-10 gap-y-3 border-b border-kinari-line"
+        role="tablist"
+      >
         {
           sectionTabs.map((tab, i) => (
             <button
@@ -71,12 +76,7 @@ const sectionTabs = [
               aria-selected={i === 0 ? 'true' : 'false'}
               data-tab-button
               data-target={`section-panel-${tab.id}`}
-              class:list={[
-                'rounded-full border px-5 py-2 text-sm font-semibold transition',
-                i === 0
-                  ? ['border-amber-500', 'bg-amber-500', 'text-stone-900']
-                  : ['border-stone-300', 'text-stone-600'],
-              ]}
+              class="tab -mb-px text-base sm:text-lg"
             >
               {tab.label}
             </button>
@@ -104,5 +104,5 @@ const sectionTabs = [
   <TabsScript />
 
   <News items={news} />
-  <Footer instagramUrl={shop.instagramUrl} />
+  <Footer shop={shop} />
 </BaseLayout>
