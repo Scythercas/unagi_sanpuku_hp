@@ -6,7 +6,9 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url("/fonts/yuji-boku.ttf") format("truetype");
+  src:
+    url("/fonts/yuji-boku.woff2") format("woff2"),
+    url("/fonts/yuji-boku.ttf") format("truetype");
 }
 
 .font-brush {
