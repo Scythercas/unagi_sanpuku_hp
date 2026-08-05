@@ -1,0 +1,55 @@
+name: Deploy Preview (Cloudflare Pages)
+
+# develop とトピックブランチへの push ごとに、Cloudflare Pages へブランチ別プレビューを
+# デプロイする。本番（GitHub Pages / 独自ドメイン）とは完全に独立した確認用環境。
+# production branch = develop のため、develop への push は
+# https://sanpuku-unagi-preview.pages.dev に反映され、
+# それ以外のブランチは https://<branch>.sanpuku-unagi-preview.pages.dev に反映される。
+on:
+  push:
+    branches:
+      - develop
+      - 'feature/**'
+      - 'fix/**'
+      - 'refactor/**'
+      - 'docs/**'
+      - 'test/**'
+      - 'env/**'
+      - 'chore/**'
+      - 'ci/**'
+      - 'hotfix/**'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        env:
+          MICROCMS_SERVICE_DOMAIN: ${{ secrets.MICROCMS_SERVICE_DOMAIN }}
+          MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
+        run: npm run build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=sanpuku-unagi-preview --branch=${{ github.ref_name }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
