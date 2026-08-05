@@ -37,6 +37,7 @@ MICROCMS_API_KEY=xxxxxxxx         # GET 専用キー
 | `docs/SETUP.md` | 環境構築手順（ゼロ→公開） |
 | `docs/OPERATIONS.md` | 運用引き継ぎ書（アカウント・バックアップ・移管） |
 | `docs/CONTENT-CHECKLIST.md` | 顧客確認・素材の未確定事項 |
+| `docs/PREVIEW.md` | 複数デザイン案の並行開発とプレビュー（Cloudflare Pages） |
 
 ## 重要な約束事（詳細は CLAUDE.md）
 
