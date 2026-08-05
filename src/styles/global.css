@@ -87,13 +87,21 @@ body {
    ------------------------------------------------------------------ */
 .tab {
   font-family: var(--font-heading);
-  letter-spacing: 0.15em;
+  /* 狭い画面では字送りを詰める。セクションタブ（お品書き/佇まい/店舗案内/求人＝
+     全13文字）が 320px 幅でも一列に収まる値。 */
+  letter-spacing: 0.08em;
   color: var(--color-rikyu);
   border-bottom: 2px solid transparent;
   padding-bottom: 0.6rem;
   transition:
     color 0.2s,
     border-color 0.2s;
+}
+
+@media (min-width: 640px) {
+  .tab {
+    letter-spacing: 0.15em;
+  }
 }
 
 .tab:hover {
@@ -118,21 +126,26 @@ body {
 }
 
 /* ------------------------------------------------------------------
-   ヒーロー：動画を再生し、5秒後にうっすら暗転させながら店名を大きく表示する。
+   ヒーロー：動画を再生し、3秒後にうっすら暗転させながら店名を大きく表示する。
    スクロールはこのセクションの外に出るだけなので、待たずに下の内容へ進める。
    ------------------------------------------------------------------ */
 .hero-fallback-image {
   display: none;
 }
 
+/* 店名が出るまでの待ち時間。変えるならこの1か所だけを触る */
 @media (prefers-reduced-motion: no-preference) {
+  .hero-video,
+  .hero-reveal {
+    --hero-reveal-delay: 3s;
+  }
   .hero-video {
-    animation: hero-video-dim 1s ease-in-out 5s forwards;
+    animation: hero-video-dim 1s ease-in-out var(--hero-reveal-delay) forwards;
   }
   .hero-reveal {
     opacity: 0;
     transform: scale(0.94);
-    animation: hero-reveal-in 1.2s ease-out 5s forwards;
+    animation: hero-reveal-in 1.2s ease-out var(--hero-reveal-delay) forwards;
   }
 }
 

@@ -61,9 +61,10 @@ const sectionTabs = [
 
   <Section>
     <div data-tabs>
-      {/* 上位のセクションタブ。中央揃えをやめ、品書きの見出しのように左から並べる */}
+      {/* 上位のセクションタブ。中央揃えをやめ、品書きの見出しのように左から並べる。
+          最上位の導線なので折り返させず、狭い画面でも必ず一列に収める。 */}
       <div
-        class="mb-16 flex flex-wrap gap-x-10 gap-y-3 border-b border-kinari-line"
+        class="mb-16 flex flex-nowrap gap-x-3 border-b border-kinari-line sm:gap-x-10"
         role="tablist"
       >
         {
@@ -76,7 +77,7 @@ const sectionTabs = [
               aria-selected={i === 0 ? 'true' : 'false'}
               data-tab-button
               data-target={`section-panel-${tab.id}`}
-              class="tab -mb-px text-base sm:text-lg"
+              class="tab -mb-px whitespace-nowrap text-base sm:text-lg"
             >
               {tab.label}
             </button>
