@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import { GALLERY_TYPES, type GalleryItem } from '../lib/microcms';
 import { getLocalImage, imageMap } from '../lib/images';
 import Section from './Section.astro';
+import TabsScript from './TabsScript.astro';
 
 export interface Props {
   items: GalleryItem[];
@@ -19,10 +20,36 @@ const groups = GALLERY_TYPES.map((type) => ({
 {
   groups.length > 0 && (
     <Section id="gallery" title="ギャラリー">
-      <div class="space-y-12">
-        {groups.map((group) => (
-          <div>
-            <h3 class="mb-4 font-serif text-lg font-semibold text-stone-900">{group.type}</h3>
+      <div data-tabs>
+        <div class="mb-8 flex flex-wrap justify-center gap-2" role="tablist">
+          {groups.map((group, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`gallery-tab-${group.type}`}
+              aria-controls={`gallery-panel-${group.type}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              data-tab-button
+              data-target={`gallery-panel-${group.type}`}
+              class:list={[
+                'rounded-full border px-4 py-1.5 text-sm font-medium transition',
+                i === 0
+                  ? ['border-amber-500', 'bg-amber-500', 'text-stone-900']
+                  : ['border-stone-300', 'text-stone-600'],
+              ]}
+            >
+              {group.type}
+            </button>
+          ))}
+        </div>
+        {groups.map((group, i) => (
+          <div
+            id={`gallery-panel-${group.type}`}
+            role="tabpanel"
+            aria-labelledby={`gallery-tab-${group.type}`}
+            data-tab-panel
+            hidden={i !== 0}
+          >
             <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {group.items.map((item) => {
                 const image = getLocalImage(imageMap.gallery[item.id]?.localPath);
@@ -37,9 +64,7 @@ const groups = GALLERY_TYPES.map((type) => ({
                       loading="lazy"
                       class="aspect-[4/3] h-full w-full object-cover transition duration-300 hover:scale-105"
                     />
-                    {item.caption && (
-                      <p class="mt-1 text-xs text-stone-500">{item.caption}</p>
-                    )}
+                    {item.caption && <p class="mt-1 text-xs text-stone-500">{item.caption}</p>}
                   </li>
                 );
               })}
@@ -47,6 +72,7 @@ const groups = GALLERY_TYPES.map((type) => ({
           </div>
         ))}
       </div>
+      <TabsScript />
     </Section>
   )
 }
