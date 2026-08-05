@@ -1,58 +1,30 @@
 {
-  "generatedAt": null,
+  "generatedAt": "2026-08-05T13:17:15.052Z",
   "menu": {},
   "gallery": {
-    "gallery-exterior-1": {
-      "localPath": "/src/assets/images/gallery-exterior-1.jpg",
-      "alt": "さんぷく 店舗外観"
+    "8q0et5qnj": {
+      "localPath": "/src/assets/images/f042673e9a551481.jpg",
+      "width": 960,
+      "height": 1706,
+      "alt": ""
     },
-    "gallery-exterior-2": {
-      "localPath": "/src/assets/images/gallery-exterior-2.jpg",
-      "alt": "さんぷく 店舗外観（通り側から）"
+    "yejt-0sdd": {
+      "localPath": "/src/assets/images/2a63f8be06dbe10d.jpg",
+      "width": 2160,
+      "height": 2880,
+      "alt": ""
     },
-    "gallery-exterior-3": {
-      "localPath": "/src/assets/images/gallery-exterior-3.jpg",
-      "alt": "さんぷく 店舗入口"
+    "em8vzui8-t3": {
+      "localPath": "/src/assets/images/4fafce7e0c4fad2f.jpg",
+      "width": 1330,
+      "height": 1773,
+      "alt": ""
     },
-    "gallery-exterior-4": {
-      "localPath": "/src/assets/images/gallery-exterior-4.jpg",
-      "alt": "さんぷく 店舗外観"
-    },
-    "gallery-exterior-5": {
-      "localPath": "/src/assets/images/gallery-exterior-5.jpg",
-      "alt": "さんぷく 店舗外観"
-    },
-    "gallery-exterior-6": {
-      "localPath": "/src/assets/images/gallery-exterior-6.jpg",
-      "alt": "さんぷく 店舗外観"
-    },
-    "gallery-exterior-7": {
-      "localPath": "/src/assets/images/gallery-exterior-7.jpg",
-      "alt": "さんぷく 店舗外観"
-    },
-    "gallery-interior-1": {
-      "localPath": "/src/assets/images/gallery-interior-1.jpg",
-      "alt": "さんぷく 店内座敷"
-    },
-    "gallery-interior-2": {
-      "localPath": "/src/assets/images/gallery-interior-2.jpg",
-      "alt": "さんぷく 店内"
-    },
-    "gallery-kitchen-1": {
-      "localPath": "/src/assets/images/gallery-kitchen-1.jpg",
-      "alt": "うなぎを焼く様子"
-    },
-    "gallery-food-1": {
-      "localPath": "/src/assets/images/gallery-food-1.jpg",
-      "alt": "うな重"
-    },
-    "gallery-food-2": {
-      "localPath": "/src/assets/images/gallery-food-2.jpg",
-      "alt": "うなぎ料理"
-    },
-    "gallery-food-3": {
-      "localPath": "/src/assets/images/gallery-food-3.jpg",
-      "alt": "うなぎ料理"
+    "u5fofi_pdsoj": {
+      "localPath": "/src/assets/images/04839ed5aac31797.jpg",
+      "width": 2160,
+      "height": 2880,
+      "alt": ""
     }
   }
 }
