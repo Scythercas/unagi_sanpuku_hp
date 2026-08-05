@@ -1,5 +1,30 @@
 {
-  "generatedAt": null,
+  "generatedAt": "2026-08-05T13:17:15.052Z",
   "menu": {},
-  "gallery": {}
+  "gallery": {
+    "8q0et5qnj": {
+      "localPath": "/src/assets/images/f042673e9a551481.jpg",
+      "width": 960,
+      "height": 1706,
+      "alt": ""
+    },
+    "yejt-0sdd": {
+      "localPath": "/src/assets/images/2a63f8be06dbe10d.jpg",
+      "width": 2160,
+      "height": 2880,
+      "alt": ""
+    },
+    "em8vzui8-t3": {
+      "localPath": "/src/assets/images/4fafce7e0c4fad2f.jpg",
+      "width": 1330,
+      "height": 1773,
+      "alt": ""
+    },
+    "u5fofi_pdsoj": {
+      "localPath": "/src/assets/images/04839ed5aac31797.jpg",
+      "width": 2160,
+      "height": 2880,
+      "alt": ""
+    }
+  }
 }

@@ -30,6 +30,7 @@ const rows: { label: string; value: string }[] = [
     ? [{ label: '出前', value: shop.delivery ? '対応' : '非対応' }]
     : []),
   ...(shop.accessNote ? [{ label: 'アクセス', value: shop.accessNote }] : []),
+  ...(shop.notes ? [{ label: 'ご案内', value: shop.notes }] : []),
 ];
 ---
 

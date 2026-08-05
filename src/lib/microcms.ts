@@ -26,14 +26,16 @@ export type Shop = {
   delivery?: boolean;
   instagramUrl?: string;
   accessNote?: string;
+  notes?: string;
 };
 
 // --- API② menu（リスト形式） ---
 export const MENU_CATEGORIES = [
-  'うな重',
   'うな丼',
-  '宴会・コース',
+  'うな重',
+  '定食',
   '一品',
+  '宴会・コース',
   'テイクアウト',
   'ドリンク',
 ] as const;
@@ -80,20 +82,30 @@ export async function getShop(): Promise<Shop> {
   return client.getObject<Shop>({ endpoint: 'shop' });
 }
 
+// microCMS のセレクトフィールドは「複数選択」設定だと値が配列で返る。
+// このサイトのカテゴリ/種別は常に単一選択の想定なので、配列なら先頭要素を使う。
+function firstOf<T>(value: T | T[]): T {
+  return Array.isArray(value) ? value[0] : value;
+}
+
 export async function getMenuList(): Promise<MenuItem[]> {
-  const { contents } = await client.getList<MenuItem>({
+  const { contents } = await client.getList<Omit<MenuItem, 'category'> & {
+    category: MenuCategory | MenuCategory[];
+  }>({
     endpoint: 'menu',
     queries: { limit: 100, orders: 'order' },
   });
-  return contents;
+  return contents.map((item) => ({ ...item, category: firstOf(item.category) }));
 }
 
 export async function getGalleryList(): Promise<GalleryItem[]> {
-  const { contents } = await client.getList<GalleryItem>({
+  const { contents } = await client.getList<Omit<GalleryItem, 'type'> & {
+    type: GalleryType | GalleryType[];
+  }>({
     endpoint: 'gallery',
     queries: { limit: 100, orders: 'order' },
   });
-  return contents;
+  return contents.map((item) => ({ ...item, type: firstOf(item.type) }));
 }
 
 export async function getRecruit(): Promise<Recruit> {
