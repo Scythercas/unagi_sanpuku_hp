@@ -1,6 +1,8 @@
 ---
 // タブ切り替えの挙動のみを提供する。マークアップは利用側で
 // data-tabs / data-tab-button / data-tab-panel を使って組み立てる。
+// セクションタブの中にメニュー/ギャラリーの内側タブが入れ子になるため、
+// closest() で「直近の data-tabs」が自分自身のものだけを対象にする。
 ---
 
 <script>
@@ -8,7 +10,15 @@
   const INACTIVE = ['border-stone-300', 'text-stone-600'];
 
   document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
-    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-tab-button]');
+    const ownedBy = (el: Element) => el.closest('[data-tabs]') === root;
+
+    const buttons = Array.from(
+      root.querySelectorAll<HTMLButtonElement>('[data-tab-button]')
+    ).filter(ownedBy);
+    const panels = Array.from(
+      root.querySelectorAll<HTMLElement>('[data-tab-panel]')
+    ).filter(ownedBy);
+
     buttons.forEach((button) => {
       button.addEventListener('click', () => {
         const targetId = button.dataset.target;
@@ -18,7 +28,7 @@
           b.classList.remove(...ACTIVE, ...INACTIVE);
           b.classList.add(...(isActive ? ACTIVE : INACTIVE));
         });
-        root.querySelectorAll<HTMLElement>('[data-tab-panel]').forEach((panel) => {
+        panels.forEach((panel) => {
           panel.hidden = panel.id !== targetId;
         });
       });

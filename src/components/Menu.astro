@@ -1,93 +1,85 @@
 ---
 import { Image } from 'astro:assets';
-import { MENU_CATEGORIES, type MenuItem } from '../lib/microcms';
+import type { MenuGroup } from '../lib/content';
 import { getLocalImage, imageMap } from '../lib/images';
-import Section from './Section.astro';
 import TabsScript from './TabsScript.astro';
 
 export interface Props {
-  items: MenuItem[];
+  groups: MenuGroup[];
 }
 
-const { items } = Astro.props;
-
-const groups = MENU_CATEGORIES.map((category) => ({
-  category,
-  items: items.filter((item) => item.category === category),
-})).filter((group) => group.items.length > 0);
+const { groups } = Astro.props;
 
 function formatPrice(price: number) {
   return `${price.toLocaleString('ja-JP')}円`;
 }
 ---
 
-{
-  groups.length > 0 && (
-    <Section id="menu" title="メニュー">
-      <div data-tabs>
-        <div class="mb-8 flex flex-wrap justify-center gap-2" role="tablist">
-          {groups.map((group, i) => (
-            <button
-              type="button"
-              role="tab"
-              id={`menu-tab-${group.category}`}
-              aria-controls={`menu-panel-${group.category}`}
-              aria-selected={i === 0 ? 'true' : 'false'}
-              data-tab-button
-              data-target={`menu-panel-${group.category}`}
-              class:list={[
-                'rounded-full border px-4 py-1.5 text-sm font-medium transition',
-                i === 0
-                  ? ['border-amber-500', 'bg-amber-500', 'text-stone-900']
-                  : ['border-stone-300', 'text-stone-600'],
-              ]}
-            >
-              {group.category}
-            </button>
-          ))}
-        </div>
-        {groups.map((group, i) => (
-          <div
-            id={`menu-panel-${group.category}`}
-            role="tabpanel"
-            aria-labelledby={`menu-tab-${group.category}`}
-            data-tab-panel
-            hidden={i !== 0}
-          >
-            <ul class="grid gap-8 sm:grid-cols-2">
-              {group.items.map((item) => {
-                const image = getLocalImage(imageMap.menu[item.id]?.localPath);
-                return (
-                  <li class="flex gap-4">
-                    {image && (
-                      <Image
-                        src={image}
-                        alt={item.name}
-                        widths={[200, 400]}
-                        sizes="120px"
-                        loading="lazy"
-                        class="h-24 w-24 flex-none rounded-lg object-cover"
-                      />
-                    )}
-                    <div>
-                      <div class="flex items-baseline justify-between gap-4">
-                        <p class="font-medium text-stone-900">{item.name}</p>
-                        <p class="whitespace-nowrap font-serif text-amber-700">
-                          {formatPrice(item.price)}
-                        </p>
-                      </div>
-                      {item.description && (
-                        <p class="mt-1 text-sm text-stone-600">{item.description}</p>
-                      )}
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+<div data-tabs>
+  <div class="mb-8 flex flex-wrap justify-center gap-2" role="tablist">
+    {
+      groups.map((group, i) => (
+        <button
+          type="button"
+          role="tab"
+          id={`menu-tab-${group.category}`}
+          aria-controls={`menu-panel-${group.category}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          data-tab-button
+          data-target={`menu-panel-${group.category}`}
+          class:list={[
+            'rounded-full border px-4 py-1.5 text-sm font-medium transition',
+            i === 0
+              ? ['border-amber-500', 'bg-amber-500', 'text-stone-900']
+              : ['border-stone-300', 'text-stone-600'],
+          ]}
+        >
+          {group.category}
+        </button>
+      ))
+    }
+  </div>
+  {
+    groups.map((group, i) => (
+      <div
+        id={`menu-panel-${group.category}`}
+        role="tabpanel"
+        aria-labelledby={`menu-tab-${group.category}`}
+        data-tab-panel
+        hidden={i !== 0}
+      >
+        <ul class="grid gap-8 sm:grid-cols-2">
+          {group.items.map((item) => {
+            const image = getLocalImage(imageMap.menu[item.id]?.localPath);
+            return (
+              <li class="flex gap-4">
+                {image && (
+                  <Image
+                    src={image}
+                    alt={item.name}
+                    widths={[200, 400]}
+                    sizes="120px"
+                    loading="lazy"
+                    class="h-24 w-24 flex-none rounded-lg object-cover"
+                  />
+                )}
+                <div>
+                  <div class="flex items-baseline justify-between gap-4">
+                    <p class="font-medium text-stone-900">{item.name}</p>
+                    <p class="whitespace-nowrap font-serif text-amber-700">
+                      {formatPrice(item.price)}
+                    </p>
+                  </div>
+                  {item.description && (
+                    <p class="mt-1 text-sm text-stone-600">{item.description}</p>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
       </div>
-      <TabsScript />
-    </Section>
-  )
-}
+    ))
+  }
+</div>
+<TabsScript />

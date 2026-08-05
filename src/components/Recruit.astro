@@ -1,6 +1,5 @@
 ---
 import type { Recruit } from '../lib/microcms';
-import Section from './Section.astro';
 
 export interface Props {
   recruit: Recruit;
@@ -9,35 +8,37 @@ export interface Props {
 const { recruit } = Astro.props;
 ---
 
-{
-  recruit.isOpen && (
-    <Section id="recruit" title="採用情報">
-      <div class="mx-auto max-w-2xl space-y-6 text-stone-700">
-        {recruit.jobDescription && (
-          <div>
-            <h3 class="mb-1 font-semibold text-stone-900">仕事内容</h3>
-            <p class="whitespace-pre-line">{recruit.jobDescription}</p>
-          </div>
-        )}
-        {recruit.wage && (
-          <div>
-            <h3 class="mb-1 font-semibold text-stone-900">給与・時給</h3>
-            <p class="whitespace-pre-line">{recruit.wage}</p>
-          </div>
-        )}
-        {recruit.shift && (
-          <div>
-            <h3 class="mb-1 font-semibold text-stone-900">勤務時間・シフト</h3>
-            <p class="whitespace-pre-line">{recruit.shift}</p>
-          </div>
-        )}
-        {recruit.howToApply && (
-          <div>
-            <h3 class="mb-1 font-semibold text-stone-900">応募方法</h3>
-            <p class="whitespace-pre-line">{recruit.howToApply}</p>
-          </div>
-        )}
+<div class="mx-auto max-w-2xl space-y-6 text-stone-700">
+  {
+    recruit.jobDescription && (
+      <div>
+        <h3 class="mb-1 font-semibold text-stone-900">仕事内容</h3>
+        <p class="whitespace-pre-line">{recruit.jobDescription}</p>
       </div>
-    </Section>
-  )
-}
+    )
+  }
+  {
+    recruit.wage && (
+      <div>
+        <h3 class="mb-1 font-semibold text-stone-900">給与・時給</h3>
+        <p class="whitespace-pre-line">{recruit.wage}</p>
+      </div>
+    )
+  }
+  {
+    recruit.shift && (
+      <div>
+        <h3 class="mb-1 font-semibold text-stone-900">勤務時間・シフト</h3>
+        <p class="whitespace-pre-line">{recruit.shift}</p>
+      </div>
+    )
+  }
+  {
+    recruit.howToApply && (
+      <div>
+        <h3 class="mb-1 font-semibold text-stone-900">応募方法</h3>
+        <p class="whitespace-pre-line">{recruit.howToApply}</p>
+      </div>
+    )
+  }
+</div>

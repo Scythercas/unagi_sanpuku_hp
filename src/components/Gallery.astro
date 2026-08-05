@@ -1,78 +1,70 @@
 ---
 import { Image } from 'astro:assets';
-import { GALLERY_TYPES, type GalleryItem } from '../lib/microcms';
+import type { GalleryGroup } from '../lib/content';
 import { getLocalImage, imageMap } from '../lib/images';
-import Section from './Section.astro';
 import TabsScript from './TabsScript.astro';
 
 export interface Props {
-  items: GalleryItem[];
+  groups: GalleryGroup[];
 }
 
-const { items } = Astro.props;
-
-const groups = GALLERY_TYPES.map((type) => ({
-  type,
-  items: items.filter((item) => item.type === type),
-})).filter((group) => group.items.length > 0);
+const { groups } = Astro.props;
 ---
 
-{
-  groups.length > 0 && (
-    <Section id="gallery" title="ギャラリー">
-      <div data-tabs>
-        <div class="mb-8 flex flex-wrap justify-center gap-2" role="tablist">
-          {groups.map((group, i) => (
-            <button
-              type="button"
-              role="tab"
-              id={`gallery-tab-${group.type}`}
-              aria-controls={`gallery-panel-${group.type}`}
-              aria-selected={i === 0 ? 'true' : 'false'}
-              data-tab-button
-              data-target={`gallery-panel-${group.type}`}
-              class:list={[
-                'rounded-full border px-4 py-1.5 text-sm font-medium transition',
-                i === 0
-                  ? ['border-amber-500', 'bg-amber-500', 'text-stone-900']
-                  : ['border-stone-300', 'text-stone-600'],
-              ]}
-            >
-              {group.type}
-            </button>
-          ))}
-        </div>
-        {groups.map((group, i) => (
-          <div
-            id={`gallery-panel-${group.type}`}
-            role="tabpanel"
-            aria-labelledby={`gallery-tab-${group.type}`}
-            data-tab-panel
-            hidden={i !== 0}
-          >
-            <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {group.items.map((item) => {
-                const image = getLocalImage(imageMap.gallery[item.id]?.localPath);
-                if (!image) return null;
-                return (
-                  <li class="overflow-hidden rounded-lg">
-                    <Image
-                      src={image}
-                      alt={item.caption ?? group.type}
-                      widths={[400, 800]}
-                      sizes="(min-width: 640px) 33vw, 50vw"
-                      loading="lazy"
-                      class="aspect-[4/3] h-full w-full object-cover transition duration-300 hover:scale-105"
-                    />
-                    {item.caption && <p class="mt-1 text-xs text-stone-500">{item.caption}</p>}
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+<div data-tabs>
+  <div class="mb-8 flex flex-wrap justify-center gap-2" role="tablist">
+    {
+      groups.map((group, i) => (
+        <button
+          type="button"
+          role="tab"
+          id={`gallery-tab-${group.type}`}
+          aria-controls={`gallery-panel-${group.type}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          data-tab-button
+          data-target={`gallery-panel-${group.type}`}
+          class:list={[
+            'rounded-full border px-4 py-1.5 text-sm font-medium transition',
+            i === 0
+              ? ['border-amber-500', 'bg-amber-500', 'text-stone-900']
+              : ['border-stone-300', 'text-stone-600'],
+          ]}
+        >
+          {group.type}
+        </button>
+      ))
+    }
+  </div>
+  {
+    groups.map((group, i) => (
+      <div
+        id={`gallery-panel-${group.type}`}
+        role="tabpanel"
+        aria-labelledby={`gallery-tab-${group.type}`}
+        data-tab-panel
+        hidden={i !== 0}
+      >
+        <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {group.items.map((item) => {
+            const image = getLocalImage(imageMap.gallery[item.id]?.localPath);
+            if (!image) return null;
+            return (
+              <li class="overflow-hidden rounded-lg">
+                <Image
+                  src={image}
+                  alt={item.caption ?? group.type}
+                  widths={[400, 800]}
+                  sizes="(min-width: 640px) 33vw, 50vw"
+                  loading="lazy"
+                  class="aspect-[4/3] h-full w-full object-cover transition duration-300 hover:scale-105"
+                />
+                {item.caption && <p class="mt-1 text-xs text-stone-500">{item.caption}</p>}
+              </li>
+            );
+          })}
+        </ul>
       </div>
-      <TabsScript />
-    </Section>
-  )
-}
+    ))
+  }
+</div>
+<TabsScript />

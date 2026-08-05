@@ -10,8 +10,11 @@ import ShopInfo from '../components/ShopInfo.astro';
 import Recruit from '../components/Recruit.astro';
 import News from '../components/News.astro';
 import Footer from '../components/Footer.astro';
+import Section from '../components/Section.astro';
+import TabsScript from '../components/TabsScript.astro';
 import { getGalleryList, getMenuList, getNewsList, getRecruit, getShop } from '../lib/microcms';
 import { getLocalImage, imageMap } from '../lib/images';
+import { groupGalleryByType, groupMenuByCategory } from '../lib/content';
 
 const [shop, menu, gallery, recruit, news] = await Promise.all([
   getShop(),
@@ -21,7 +24,7 @@ const [shop, menu, gallery, recruit, news] = await Promise.all([
   getNewsList(),
 ]);
 
-const heroGalleryItem = gallery.find((item) => item.type === '外観') ?? gallery[0];
+const heroGalleryItem = gallery.find((item) => item.type === '調理') ?? gallery[0];
 const heroImage = heroGalleryItem
   ? getLocalImage(imageMap.gallery[heroGalleryItem.id]?.localPath)
   : undefined;
@@ -37,17 +40,69 @@ const title = `${shop.name}｜北高崎のうなぎ専門店`;
 const description =
   shop.catchcopy ??
   `群馬県高崎市（北高崎）のうなぎ専門店「${shop.name}」。落ち着いた雰囲気でうな重・うな丼をご提供しています。`;
+
+const menuGroups = groupMenuByCategory(menu);
+const galleryGroups = groupGalleryByType(gallery);
+
+const sectionTabs = [
+  menuGroups.length > 0 ? { id: 'menu', label: 'メニュー' } : null,
+  galleryGroups.length > 0 ? { id: 'gallery', label: 'ギャラリー' } : null,
+  { id: 'access', label: '店舗情報' },
+  recruit.isOpen ? { id: 'recruit', label: '採用情報' } : null,
+].filter((tab): tab is { id: string; label: string } => tab !== null);
 ---
 
 <BaseLayout title={title} description={description} ogImageUrl={ogImageUrl}>
   <StructuredData shop={shop} menu={menu} ogImageUrl={ogImageUrl} slot="head" />
 
-  <Hero shopName={shop.name} tel={shop.tel} heroImage={heroImage} heroAlt={shop.name} />
+  <Hero shopName={shop.name} heroImage={heroImage} heroAlt={shop.name} />
   <Intro catchcopy={shop.catchcopy} />
-  <Menu items={menu} />
-  <Gallery items={gallery} />
-  <ShopInfo shop={shop} />
-  <Recruit recruit={recruit} />
+
+  <Section>
+    <div data-tabs>
+      <div class="mb-10 flex flex-wrap justify-center gap-2" role="tablist">
+        {
+          sectionTabs.map((tab, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`section-tab-${tab.id}`}
+              aria-controls={`section-panel-${tab.id}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              data-tab-button
+              data-target={`section-panel-${tab.id}`}
+              class:list={[
+                'rounded-full border px-5 py-2 text-sm font-semibold transition',
+                i === 0
+                  ? ['border-amber-500', 'bg-amber-500', 'text-stone-900']
+                  : ['border-stone-300', 'text-stone-600'],
+              ]}
+            >
+              {tab.label}
+            </button>
+          ))
+        }
+      </div>
+      {
+        sectionTabs.map((tab, i) => (
+          <div
+            id={`section-panel-${tab.id}`}
+            role="tabpanel"
+            aria-labelledby={`section-tab-${tab.id}`}
+            data-tab-panel
+            hidden={i !== 0}
+          >
+            {tab.id === 'menu' && <Menu groups={menuGroups} />}
+            {tab.id === 'gallery' && <Gallery groups={galleryGroups} />}
+            {tab.id === 'access' && <ShopInfo shop={shop} />}
+            {tab.id === 'recruit' && <Recruit recruit={recruit} />}
+          </div>
+        ))
+      }
+    </div>
+  </Section>
+  <TabsScript />
+
   <News items={news} />
   <Footer instagramUrl={shop.instagramUrl} />
 </BaseLayout>
