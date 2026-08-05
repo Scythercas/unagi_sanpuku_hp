@@ -1,0 +1,27 @@
+---
+// タブ切り替えの挙動のみを提供する。マークアップは利用側で
+// data-tabs / data-tab-button / data-tab-panel を使って組み立てる。
+---
+
+<script>
+  const ACTIVE = ['border-amber-500', 'bg-amber-500', 'text-stone-900'];
+  const INACTIVE = ['border-stone-300', 'text-stone-600'];
+
+  document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-tab-button]');
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const targetId = button.dataset.target;
+        buttons.forEach((b) => {
+          const isActive = b === button;
+          b.setAttribute('aria-selected', String(isActive));
+          b.classList.remove(...ACTIVE, ...INACTIVE);
+          b.classList.add(...(isActive ? ACTIVE : INACTIVE));
+        });
+        root.querySelectorAll<HTMLElement>('[data-tab-panel]').forEach((panel) => {
+          panel.hidden = panel.id !== targetId;
+        });
+      });
+    });
+  });
+</script>

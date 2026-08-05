@@ -1,6 +1,5 @@
 ---
 import type { Shop } from '../lib/microcms';
-import { GOOGLE_MAP_EMBED_SRC } from '../lib/config';
 import TelLink from './TelLink.astro';
 import Section from './Section.astro';
 
@@ -9,6 +8,10 @@ export interface Props {
 }
 
 const { shop } = Astro.props;
+
+// API キー不要の検索埋め込み形式（住所は CMS 側の値をそのまま使うため、
+// 店舗情報が更新されても地図の位置は自動的に追従する）
+const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(`${shop.name} ${shop.address}`)}&output=embed`;
 
 const seats = [
   shop.seatsCounter ? `カウンター ${shop.seatsCounter}席` : null,
@@ -54,19 +57,15 @@ const rows: { label: string; value: string }[] = [
         </dd>
       </div>
     </dl>
-    {
-      GOOGLE_MAP_EMBED_SRC && (
-        <div class="overflow-hidden rounded-lg border border-stone-200">
-          <iframe
-            src={GOOGLE_MAP_EMBED_SRC}
-            class="h-72 w-full sm:h-full"
-            style="border:0"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            title={`${shop.name}の地図`}
-          />
-        </div>
-      )
-    }
+    <div class="overflow-hidden rounded-lg border border-stone-200">
+      <iframe
+        src={mapSrc}
+        class="h-72 w-full sm:h-full"
+        style="border:0"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title={`${shop.name}の地図`}
+      />
+    </div>
   </div>
 </Section>
