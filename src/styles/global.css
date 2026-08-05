@@ -1,1 +1,54 @@
 @import "tailwindcss";
+
+/* 店名表示用の筆文字フォント（ひらがな・カタカナ全体をサブセット済み） */
+@font-face {
+  font-family: "Yuji Boku";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/yuji-boku.ttf") format("truetype");
+}
+
+.font-brush {
+  font-family: "Yuji Boku", "Hiragino Mincho ProN", "Yu Mincho", serif;
+}
+
+/* 通常時：動画を再生し、5秒後にうっすら暗転させながら店名を大きく表示する。
+   スクロールはこのセクションの外に出るだけなので、待たずに下の内容へ進める。 */
+.hero-fallback-image {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-video {
+    animation: hero-video-dim 1s ease-in-out 5s forwards;
+  }
+  .hero-reveal {
+    opacity: 0;
+    transform: scale(0.94);
+    animation: hero-reveal-in 1.2s ease-out 5s forwards;
+  }
+}
+
+@keyframes hero-video-dim {
+  to {
+    opacity: 0.3;
+  }
+}
+
+@keyframes hero-reveal-in {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 動きを抑えたい利用者には動画の代わりに静止画を表示し、店名は最初から見せる */
+@media (prefers-reduced-motion: reduce) {
+  .hero-video {
+    display: none;
+  }
+  .hero-fallback-image {
+    display: block;
+  }
+}
