@@ -26,7 +26,8 @@
 - **Astro**（静的出力）+ **Tailwind CSS**。Astro/Tailwind の導入は着手時点の公式手順に従う（Tailwind のバージョンや連携方法は変わりうるので要確認）。
 - 画像最適化：`astro:assets`（内部で sharp）。**ローカル画像**として最適化する。
 - コンテンツ：**microCMS**（ヘッドレス CMS、Hobby 無料プラン）。SDK は `microcms-js-sdk`。
-- ホスティング：**GitHub Pages**（public リポジトリ）。デプロイは GitHub Actions。
+- ホスティング（本番）：**GitHub Pages**（public リポジトリ）。デプロイは GitHub Actions（`.github/workflows/deploy.yml`）。
+- プレビュー（開発用）：**Cloudflare Pages**。`develop` およびトピックブランチへの push で `.github/workflows/preview.yml` が実URL（`<branch>.sanpuku-unagi-preview.pages.dev`）へ自動デプロイする。本番の GitHub Pages とは完全に独立した、開発者のデザイン確認専用の環境。
 - 解析：**Google Analytics 4**（gtag）。
 - 地図：Google マップの共有埋め込み iframe（**API キー不要**。Maps JavaScript API は使わない）。
 
@@ -43,19 +44,27 @@
 ├─ public/
 │   ├─ CNAME                     # {{DOMAIN}} を記載
 │   ├─ robots.txt
-│   └─ favicon.*
+│   ├─ favicon.*
+│   ├─ fonts/                    # 自己ホストする筆文字フォント（woff2/ttf、店名表示用）
+│   └─ videos/                   # ヒーロー動画（現状は仮動画。本番は店舗提供の調理動画に差し替え予定）
 ├─ scripts/
 │   └─ prebuild-images.mjs       # microCMS 画像をローカルへ取得（下記契約）
 ├─ src/
 │   ├─ assets/images/            # 取得済み画像（Git にコミットする＝バックアップ兼用）
 │   ├─ data/image-map.json       # 生成物。record id → ローカル画像パス等の対応表
-│   ├─ lib/microcms.ts           # microCMS クライアントと取得ヘルパ
+│   ├─ lib/
+│   │   ├─ microcms.ts           # microCMS クライアントと取得ヘルパ
+│   │   ├─ images.ts             # image-map.json → astro:assets 用ローカル画像の解決
+│   │   ├─ content.ts            # menu/gallery のカテゴリ/種別グルーピング
+│   │   └─ config.ts             # GA4 測定 ID 等のハードコード設定
 │   ├─ layouts/
-│   ├─ components/
+│   ├─ components/                # Hero/Menu/Gallery/ShopInfo/Recruit/News/Footer/TabsScript 等
 │   └─ pages/
 │       ├─ index.astro           # メインの1ページ（セクション構成）
 │       └─ privacy.astro         # プライバシーポリシー（GA 利用のため必須）
-├─ .github/workflows/deploy.yml
+├─ .github/workflows/
+│   ├─ deploy.yml                # 本番（GitHub Pages）。push(main) / workflow_dispatch / microCMS Webhook
+│   └─ preview.yml               # 開発用プレビュー（Cloudflare Pages）。push(develop・トピックブランチ)
 └─ docs/                          # 設計・手順・引き継ぎ
 ```
 
@@ -105,20 +114,21 @@ Astro 側の最適化：
 
 ## ページ構成（index.astro のセクション）
 
-1. ヒーロー（店名＋一言紹介＋代表写真、電話 CTA）
-2. 一言紹介 / こだわり
-3. メニュー（`menu` をカテゴリでグルーピング。価格は数値を「1,800円」等に整形）
-4. ギャラリー（`gallery` を種別で。外観/内装/調理/料理）
-5. 店舗情報（住所・営業時間・定休日・駐車場・席数、Google マップ iframe、`tel:` リンク）
-6. 採用（`recruit.isOpen` が true のときのみ）
-7. お知らせ（`news`。臨時休業等）
-8. フッター（Instagram リンク、コピーライト、プライバシーポリシーへのリンク）
+1. ヒーロー：5秒ほどの調理動画イントロ→筆文字フォント（自己ホスト WOFF2）で店名を大きくリビール。スクロールすればいつでも待たずに下へ進める（動画は CSS アニメーションのみで暗転・リビールし、JS 不使用）。**電話 CTA ボタンはヒーローには置かない**。`prefers-reduced-motion` 時は動画の代わりに静止画＋店名を最初から表示。
+2. 一言紹介（`shop.catchcopy`。空なら非表示）
+3. メニュー／ギャラリー／店舗情報／採用情報を**セクション単位のタブで切り替え**（`data-tabs` 属性＋`TabsScript.astro` の素の JS。ネストしたタブも `closest('[data-tabs]')` で自グループのみ制御）。存在しない・非公開のタブはそもそも生成しない：
+   - メニュー：`menu` をカテゴリでグルーピングし、内部にもカテゴリ別タブを持つ。価格は数値を「1,800円」等に整形。
+   - ギャラリー：`gallery` を種別（外観/内装/調理/料理）でグルーピングし、内部にも種別タブを持つ。
+   - 店舗情報：住所・営業時間・定休日・駐車場・席数、Google マップ iframe、`tel:` リンク。
+   - 採用情報：`recruit.isOpen` が true のときのみタブ自体を表示。
+4. お知らせ（`news`。臨時休業等。空なら非表示）
+5. フッター（Instagram リンク、コピーライト、プライバシーポリシーへのリンク）
 
 `/privacy` に GA/Cookie に関するプライバシーポリシーを置く。
 
 ## 電話 CTA
 
-電話番号は `tel:` リンクにする。クリックを **GA4 のイベント**（例：`click_tel`）として計測できるよう `onclick` で `gtag('event', ...)` を発火。「サイト経由で電話に繋がった数」が唯一意味のある指標。
+電話番号は `tel:` リンク（`TelLink.astro`）にする。ヒーローには置かず、**店舗情報タブ内にのみ**表示する。クリックを **GA4 のイベント**（`click_tel`）として計測できるようクリックリスナーで `gtag('event', 'click_tel')` を発火。「サイト経由で電話に繋がった数」が唯一意味のある指標。
 
 ## SEO / 集客の土台（初版から入れる）
 
@@ -176,9 +186,10 @@ Astro 側の最適化：
 - `docs/SETUP.md` … 環境構築手順
 - `docs/OPERATIONS.md` … 運用・引き継ぎ
 - `docs/CONTENT-CHECKLIST.md` … 顧客確認・素材の未確定事項
+- `docs/CONTENT-DRAFT.md` … microCMS 投入用コンテンツ下書きと入力進捗
 
 ## 未確定プレースホルダ（実装時に確定値へ置換）
 
-`{{DOMAIN}}`（既定 sanpuku-unagi.com・要確定）, `{{MICROCMS_SERVICE_DOMAIN}}`, `{{GA4_MEASUREMENT_ID}}`, 店舗の住所・電話・営業時間等（`docs/CONTENT-CHECKLIST.md` 参照）。
+`{{DOMAIN}}`（既定 sanpuku-unagi.com・**ドメイン未購入のため未確定**。購入までコードは既定値のまま運用）、店舗の駐車場・席数・テイクアウト/出前対応の有無等（`docs/CONTENT-CHECKLIST.md` 参照）。
 
-確定済み: `{{GITHUB_USERNAME}}` = `Scythercas`, `{{REPO_NAME}}` = `unagi_sanpuku_hp`（<https://github.com/Scythercas/unagi_sanpuku_hp>）。
+確定済み: `{{GITHUB_USERNAME}}` = `Scythercas`, `{{REPO_NAME}}` = `unagi_sanpuku_hp`（<https://github.com/Scythercas/unagi_sanpuku_hp>）。`{{MICROCMS_SERVICE_DOMAIN}}` = `unagisanpuku`。`{{GA4_MEASUREMENT_ID}}` = `G-X7TDGRCV1T`（`src/lib/config.ts` にハードコード済み）。
