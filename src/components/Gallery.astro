@@ -12,7 +12,7 @@ const { groups } = Astro.props;
 ---
 
 <div data-tabs>
-  <div class="mb-8 flex flex-wrap justify-center gap-2" role="tablist">
+  <div class="mb-12 flex flex-wrap gap-x-8 gap-y-3 border-b border-kinari-line" role="tablist">
     {
       groups.map((group, i) => (
         <button
@@ -23,12 +23,7 @@ const { groups } = Astro.props;
           aria-selected={i === 0 ? 'true' : 'false'}
           data-tab-button
           data-target={`gallery-panel-${group.type}`}
-          class:list={[
-            'rounded-full border px-4 py-1.5 text-sm font-medium transition',
-            i === 0
-              ? ['border-amber-500', 'bg-amber-500', 'text-stone-900']
-              : ['border-stone-300', 'text-stone-600'],
-          ]}
+          class="tab -mb-px text-sm sm:text-base"
         >
           {group.type}
         </button>
@@ -44,21 +39,21 @@ const { groups } = Astro.props;
         data-tab-panel
         hidden={i !== 0}
       >
-        <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6">
           {group.items.map((item) => {
             const image = getLocalImage(imageMap.gallery[item.id]?.localPath);
             if (!image) return null;
             return (
-              <li class="overflow-hidden rounded-lg">
+              <li>
                 <Image
                   src={image}
                   alt={item.caption ?? group.type}
                   widths={[400, 800]}
                   sizes="(min-width: 640px) 33vw, 50vw"
                   loading="lazy"
-                  class="aspect-[4/3] h-full w-full object-cover transition duration-300 hover:scale-105"
+                  class="aspect-[4/3] w-full object-cover"
                 />
-                {item.caption && <p class="mt-1 text-xs text-stone-500">{item.caption}</p>}
+                {item.caption && <p class="mt-2 text-xs text-rikyu">{item.caption}</p>}
               </li>
             );
           })}

@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------
+   デザイントークン
+   高崎神社前という立地から採った配色。アクセントは神社の格子や玉垣に
+   使われる弁柄（べんがら）。使用面積は全体の3%以下に留める。
+   ------------------------------------------------------------------ */
+@theme {
+  --color-sumi: #1a1714; /* 墨：導入部・フッターの地 */
+  --color-sumi-line: #35302a; /* 墨地の上の罫線 */
+  --color-sumi-weak: #a8a29a; /* 墨地の上の弱い文字 */
+  --color-kinari: #fbf9f4; /* 生成り：情報部の紙面 */
+  --color-kinari-line: #e5e0d5; /* 紙面の罫線 */
+  --color-bengara: #8c3a2b; /* 弁柄：価格・現在地・リンク */
+  --color-rikyu: #7d7a6e; /* 利休鼠：ラベル・キャプション */
+
+  /* 見出しはサブセット自己ホストのしっぽり明朝、以降はシステム明朝へ落とす。
+     本文は追加ダウンロードなしでMac/Win双方に明朝が当たるスタック。 */
+  --font-mincho:
+    "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", serif;
+  --font-heading:
+    "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", serif;
+}
+
 /* 店名表示用の筆文字フォント（ひらがな・カタカナ全体をサブセット済み） */
 @font-face {
   font-family: "Yuji Boku";
@@ -11,24 +33,119 @@
     url("/fonts/yuji-boku.ttf") format("truetype");
 }
 
-.font-brush {
-  font-family: "Yuji Boku", "Hiragino Mincho ProN", "Yu Mincho", serif;
+/* 見出し・タブ専用。表示に使う文字だけを含むサブセット（約14KB）。
+   見出し・タブの文言を増やしたら再生成が必要。手順は CLAUDE.md の
+   「見出しフォントのサブセット」を参照。 */
+@font-face {
+  font-family: "Shippori Mincho";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/shippori-mincho-subset.woff2") format("woff2");
+  unicode-range:
+    U+3044, U+3046, U+304a, U+304d-304e, U+305b-305e, U+306a, U+306e, U+307e,
+    U+3089, U+3094, U+3099-309a, U+30a2, U+30a4, U+30a6, U+30af-30b0,
+    U+30b3-30b4, U+30b7-30ba, U+30c6-30c9, U+30cf-30d1, U+30d5-30d7,
+    U+30db-30dd, U+30e9-30ea, U+30f3-30f4, U+30fb-30fc, U+4e00, U+4e3c, U+4eba,
+    U+4ed6, U+4f1a, U+4f47, U+5185, U+5317, U+54c1, U+5916, U+5b9a, U+5bb4,
+    U+5d0e, U+5e97, U+6599, U+66f8, U+6848, U+6c42, U+7406, U+77e5, U+8217,
+    U+88c5, U+89b3, U+8abf, U+91cd, U+98df, U+9ad8;
 }
 
-/* 通常時：動画を再生し、5秒後にうっすら暗転させながら店名を大きく表示する。
-   スクロールはこのセクションの外に出るだけなので、待たずに下の内容へ進める。 */
+.font-brush {
+  font-family: "Yuji Boku", var(--font-mincho);
+}
+
+/* 明朝は字面が細いため、既定より行間を広く取って可読性を確保する */
+body {
+  font-family: var(--font-mincho);
+  line-height: 1.9;
+}
+
+/* ------------------------------------------------------------------
+   セクション見出し（デスクトップは縦書き、モバイルは横書き）
+   ------------------------------------------------------------------ */
+.section-label {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  letter-spacing: 0.25em;
+}
+
+@media (min-width: 640px) {
+  .section-label-vertical {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    /* 縦書き時は letter-spacing が行末に余分な余白を作るため打ち消す */
+    margin-block-end: -0.25em;
+  }
+}
+
+/* ------------------------------------------------------------------
+   罫線タブ。選択状態は aria-selected だけで表現し、JS は属性の
+   付け替えのみを行う（マークアップとスクリプトでクラス名を
+   二重管理しないため）。
+   ------------------------------------------------------------------ */
+.tab {
+  font-family: var(--font-heading);
+  /* 狭い画面では字送りを詰める。セクションタブ（お品書き/佇まい/店舗案内/求人＝
+     全13文字）が 320px 幅でも一列に収まる値。 */
+  letter-spacing: 0.08em;
+  color: var(--color-rikyu);
+  border-bottom: 2px solid transparent;
+  padding-bottom: 0.6rem;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+}
+
+@media (min-width: 640px) {
+  .tab {
+    letter-spacing: 0.15em;
+  }
+}
+
+.tab:hover {
+  color: var(--color-sumi);
+}
+
+.tab[aria-selected="true"] {
+  color: var(--color-sumi);
+  border-bottom-color: var(--color-bengara);
+}
+
+/* ------------------------------------------------------------------
+   お品書きのリーダー罫（品名 ‥‥‥ 価格）
+   flex の隙間を点線で埋める。品名・価格が長くても崩れない。
+   ------------------------------------------------------------------ */
+.leader {
+  flex: 1 1 auto;
+  align-self: end;
+  margin-bottom: 0.35em;
+  border-bottom: 1px dotted var(--color-kinari-line);
+  min-width: 1.5rem;
+}
+
+/* ------------------------------------------------------------------
+   ヒーロー：動画を再生し、3秒後にうっすら暗転させながら店名を大きく表示する。
+   スクロールはこのセクションの外に出るだけなので、待たずに下の内容へ進める。
+   ------------------------------------------------------------------ */
 .hero-fallback-image {
   display: none;
 }
 
+/* 店名が出るまでの待ち時間。変えるならこの1か所だけを触る */
 @media (prefers-reduced-motion: no-preference) {
+  .hero-video,
+  .hero-reveal {
+    --hero-reveal-delay: 3s;
+  }
   .hero-video {
-    animation: hero-video-dim 1s ease-in-out 5s forwards;
+    animation: hero-video-dim 1s ease-in-out var(--hero-reveal-delay) forwards;
   }
   .hero-reveal {
     opacity: 0;
     transform: scale(0.94);
-    animation: hero-reveal-in 1.2s ease-out 5s forwards;
+    animation: hero-reveal-in 1.2s ease-out var(--hero-reveal-delay) forwards;
   }
 }
 

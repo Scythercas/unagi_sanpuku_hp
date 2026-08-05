@@ -1,6 +1,4 @@
 ---
-import Section from './Section.astro';
-
 export interface Props {
   catchcopy?: string;
 }
@@ -10,10 +8,14 @@ const { catchcopy } = Astro.props;
 
 {
   catchcopy && (
-    <Section id="about">
-      <p class="mx-auto max-w-2xl text-center text-lg leading-loose text-stone-700 sm:text-xl">
-        {catchcopy}
-      </p>
-    </Section>
+    <section id="about" class="bg-kinari px-5 py-28 sm:py-36">
+      <div class="mx-auto max-w-2xl">
+        <p class="whitespace-pre-line text-center text-lg leading-[2.4] tracking-wide text-sumi sm:text-xl">
+          {catchcopy}
+        </p>
+        {/* 一言紹介と本編を隔てる一本の罫。老舗の品書きの区切りに倣う */}
+        <div class="mx-auto mt-16 h-px w-16 bg-bengara" />
+      </div>
+    </section>
   )
 }

@@ -1,14 +1,13 @@
 ---
 // タブ切り替えの挙動のみを提供する。マークアップは利用側で
 // data-tabs / data-tab-button / data-tab-panel を使って組み立てる。
+// 見た目は global.css の .tab[aria-selected] が担うため、ここでは
+// 状態を表す属性だけを付け替える（クラス名の二重管理を避ける）。
 // セクションタブの中にメニュー/ギャラリーの内側タブが入れ子になるため、
 // closest() で「直近の data-tabs」が自分自身のものだけを対象にする。
 ---
 
 <script>
-  const ACTIVE = ['border-amber-500', 'bg-amber-500', 'text-stone-900'];
-  const INACTIVE = ['border-stone-300', 'text-stone-600'];
-
   document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
     const ownedBy = (el: Element) => el.closest('[data-tabs]') === root;
 
@@ -23,10 +22,7 @@
       button.addEventListener('click', () => {
         const targetId = button.dataset.target;
         buttons.forEach((b) => {
-          const isActive = b === button;
-          b.setAttribute('aria-selected', String(isActive));
-          b.classList.remove(...ACTIVE, ...INACTIVE);
-          b.classList.add(...(isActive ? ACTIVE : INACTIVE));
+          b.setAttribute('aria-selected', String(b === button));
         });
         panels.forEach((panel) => {
           panel.hidden = panel.id !== targetId;
