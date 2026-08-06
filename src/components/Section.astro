@@ -1,52 +1,31 @@
 ---
 export interface Props {
   id?: string;
-  /** セクション見出し。デスクトップでは紙面の左端に縦書きで置かれる */
+  /** セクション見出し。丸バッジで表示する */
   label?: string;
-  /** 墨地のセクション（既定は生成りの紙面） */
-  dark?: boolean;
+  /** 一段沈めた地にする（区切りとして使う） */
+  deep?: boolean;
   class?: string;
 }
 
-const { id, label, dark = false, class: className } = Astro.props;
+const { id, label, deep = false, class: className } = Astro.props;
 ---
 
 <section
   id={id}
-  class:list={[
-    'px-5 py-24 sm:py-32',
-    dark ? 'bg-sumi text-kinari' : 'bg-kinari text-sumi',
-    className,
-  ]}
+  class:list={['px-5 py-20 sm:py-24', deep ? 'bg-cream-deep' : 'bg-cream', className]}
 >
   <div class="mx-auto max-w-5xl">
     {
-      label ? (
-        <div class="sm:flex sm:gap-10">
-          {/* 見出し：デスクトップは縦書きで左端、モバイルは横書きで上 */}
-          <div class="mb-8 flex-none sm:mb-0 sm:w-12">
-            <h2
-              class:list={[
-                'section-label section-label-vertical text-xl sm:text-2xl',
-                dark ? 'text-kinari' : 'text-sumi',
-              ]}
-            >
-              {label}
-            </h2>
-            <div
-              class:list={[
-                'mt-4 h-px w-12 sm:mt-6 sm:ml-[0.6em] sm:h-24 sm:w-px',
-                dark ? 'bg-sumi-line' : 'bg-kinari-line',
-              ]}
-            />
-          </div>
-          <div class="min-w-0 flex-1">
-            <slot />
-          </div>
+      label && (
+        <div class="mb-12 text-center">
+          <h2 class="badge text-base sm:text-lg">
+            <span aria-hidden="true" class="h-2 w-2 rounded-full bg-karashi" />
+            {label}
+          </h2>
         </div>
-      ) : (
-        <slot />
       )
     }
+    <slot />
   </div>
 </section>

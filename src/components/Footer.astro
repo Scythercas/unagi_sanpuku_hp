@@ -10,22 +10,22 @@ const { shop } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
-{/* 墨地の締め。電話は最も重要な導線なので、どのページからも必ず届くようここに置く */}
-<footer class="bg-sumi px-5 py-20 text-kinari">
+{/* 焦茶の地で締める。電話は最も重要な導線なので、どのページからも必ず届くようここに置く */}
+<footer class="stripe-light bg-kogecha px-5 py-16 text-cream">
   <div class="mx-auto max-w-5xl">
-    <div class="flex flex-col gap-12 sm:flex-row sm:items-start sm:justify-between">
+    <div class="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
       <div>
-        <p class="font-brush text-4xl leading-none">{shop.name}</p>
-        <p class="mt-6 text-sm leading-relaxed text-sumi-weak">{shop.address}</p>
-        <p class="mt-2 whitespace-pre-line text-sm leading-relaxed text-sumi-weak">
+        <p class="heading text-2xl tracking-[0.14em]">{shop.name}</p>
+        <p class="mt-5 text-sm leading-relaxed text-cream/80">{shop.address}</p>
+        <p class="mt-2 whitespace-pre-line text-sm leading-relaxed text-cream/80">
           {shop.hours}
         </p>
-        <p class="mt-2 text-sm text-sumi-weak">定休日　{shop.closedDays}</p>
+        <p class="mt-2 text-sm text-cream/80">定休日　{shop.closedDays}</p>
       </div>
 
       <div class="sm:text-right">
-        <p class="text-xs tracking-[0.3em] text-sumi-weak">ご予約・お問い合わせ</p>
-        <TelLink tel={shop.tel} class="mt-3 block text-3xl tabular-nums text-kinari">
+        <p class="heading text-xs text-karashi">ご予約・お問い合わせ</p>
+        <TelLink tel={shop.tel} class="mt-2 block text-3xl font-bold tabular-nums text-cream">
           {shop.tel}
         </TelLink>
         {
@@ -34,7 +34,7 @@ const year = new Date().getFullYear();
               href={shop.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
-              class="mt-6 inline-block border-b border-sumi-line pb-1 text-sm text-sumi-weak transition hover:text-kinari"
+              class="mt-5 inline-block rounded-full border-2 border-cream/40 px-4 py-1 text-sm text-cream/80 transition hover:border-cream hover:text-cream"
             >
               Instagram
             </a>
@@ -44,10 +44,10 @@ const year = new Date().getFullYear();
     </div>
 
     <div
-      class="mt-16 flex flex-col gap-3 border-t border-sumi-line pt-8 text-xs text-sumi-weak sm:flex-row sm:justify-between"
+      class="mt-12 flex flex-col gap-3 border-t border-cream/25 pt-6 text-xs text-cream/70 sm:flex-row sm:justify-between"
     >
       <p>&copy; {year} {shop.name}</p>
-      <a href="/privacy" class="transition hover:text-kinari">プライバシーポリシー</a>
+      <a href="/privacy" class="transition hover:text-cream">プライバシーポリシー</a>
     </div>
   </div>
 </footer>

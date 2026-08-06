@@ -1,59 +1,46 @@
 ---
-import { Image, getImage } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
-
 export interface Props {
   shopName: string;
-  heroImage?: ImageMetadata;
-  heroAlt?: string;
+  catchcopy?: string;
 }
 
-const { shopName, heroImage, heroAlt } = Astro.props;
+const { shopName, catchcopy } = Astro.props;
 
-// TODO: お店から提供された実際の調理動画に差し替える（docs/【さんぷく様HP製作】お店へのお願い.pdf 参照）
-const heroVideoSrc = '/videos/hero-cooking-placeholder.mp4';
-
-// 動画の読み込み完了までのポスター、および prefers-reduced-motion 時の代替に使う
-const posterSrc = heroImage
-  ? (await getImage({ src: heroImage, width: 1600, format: 'jpg' })).src
-  : undefined;
+// 写真は使わず、円と斜ストライプで組んだ看板として見せる。
+// 写真が4枚しかなくても画面が持つのが狙い。
 ---
 
-<section class="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-sumi text-kinari">
-  <video
-    class="hero-video absolute inset-0 h-full w-full object-cover opacity-90"
-    autoplay
-    muted
-    loop
-    playsinline
-    preload="auto"
-    poster={posterSrc}
-  >
-    <source src={heroVideoSrc} type="video/mp4" />
-  </video>
+<section class="stripe relative overflow-hidden bg-cream px-5 py-24 sm:py-32">
+  {/* 背景の円。装飾なので読み上げ対象から外す */}
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0">
+    <div class="bob absolute -left-16 top-10 h-56 w-56 rounded-full bg-midori/90"></div>
+    <div class="bob-slow absolute -right-10 top-40 h-40 w-40 rounded-full bg-shu/90"></div>
+    <div class="bob absolute bottom-6 left-1/3 h-24 w-24 rounded-full bg-karashi"></div>
+  </div>
 
-  {
-    heroImage && (
-      <Image
-        src={heroImage}
-        alt={heroAlt ?? shopName}
-        widths={[400, 800, 1200, 1600]}
-        sizes="100vw"
-        loading="eager"
-        fetchpriority="high"
-        class="hero-fallback-image absolute inset-0 h-full w-full object-cover opacity-90"
-      />
-    )
-  }
+  <div class="relative mx-auto max-w-3xl">
+    <div class="signboard px-6 py-12 text-center sm:px-12 sm:py-16">
+      <p class="heading text-sm text-shu sm:text-base">うなぎのお店</p>
 
-  <div class="absolute inset-0 bg-gradient-to-b from-sumi/60 via-sumi/25 to-sumi/80"></div>
+      <h1 class="heading mt-5 text-5xl leading-tight tracking-[0.16em] text-kogecha sm:text-7xl">
+        {shopName}
+      </h1>
 
-  <div class="hero-reveal relative z-10 px-5 text-center">
-    <p class="section-label text-xs text-sumi-weak sm:text-sm">北高崎 うなぎ</p>
-    {/* 紙面へ続く一本の罫。弁柄はここと本編の区切りだけに使う */}
-    <div class="mx-auto my-7 h-px w-10 bg-bengara"></div>
-    <h1 class="font-brush text-6xl leading-none tracking-wide sm:text-8xl">
-      {shopName}
-    </h1>
+      <div class="mt-7 flex items-center justify-center gap-3" aria-hidden="true">
+        <span class="h-2.5 w-2.5 rounded-full bg-shu"></span>
+        <span class="h-2.5 w-2.5 rounded-full bg-karashi"></span>
+        <span class="h-2.5 w-2.5 rounded-full bg-midori"></span>
+      </div>
+
+      <p class="heading mt-7 text-base text-kogecha sm:text-lg">創業以来の味</p>
+
+      {
+        catchcopy && (
+          <p class="mx-auto mt-6 max-w-md whitespace-pre-line text-sm leading-loose text-kogecha-dim sm:text-base">
+            {catchcopy}
+          </p>
+        )
+      }
+    </div>
   </div>
 </section>

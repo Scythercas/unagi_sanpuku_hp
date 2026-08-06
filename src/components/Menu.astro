@@ -1,8 +1,5 @@
 ---
-import { Image } from 'astro:assets';
 import type { MenuGroup } from '../lib/content';
-import { getLocalImage, imageMap } from '../lib/images';
-import TabsScript from './TabsScript.astro';
 
 export interface Props {
   groups: MenuGroup[];
@@ -13,70 +10,35 @@ const { groups } = Astro.props;
 function formatPrice(price: number) {
   return `${price.toLocaleString('ja-JP')}円`;
 }
+
+// 短冊は縦書きなので、品名が長いと極端に縦長になる。
+// 一定を超えたら字を小さくして、壁に貼った短冊の高さが揃って見えるようにする。
+function nameSizeClass(name: string) {
+  if (name.length >= 12) return 'text-sm';
+  if (name.length >= 8) return 'text-base';
+  return 'text-lg';
+}
 ---
 
-<div data-tabs>
-  <div class="mb-12 flex flex-wrap gap-x-8 gap-y-3 border-b border-kinari-line" role="tablist">
-    {
-      groups.map((group, i) => (
-        <button
-          type="button"
-          role="tab"
-          id={`menu-tab-${group.category}`}
-          aria-controls={`menu-panel-${group.category}`}
-          aria-selected={i === 0 ? 'true' : 'false'}
-          data-tab-button
-          data-target={`menu-panel-${group.category}`}
-          class="tab -mb-px text-sm sm:text-base"
-        >
-          {group.category}
-        </button>
-      ))
-    }
-  </div>
+<div class="space-y-14">
   {
-    groups.map((group, i) => (
-      <div
-        id={`menu-panel-${group.category}`}
-        role="tabpanel"
-        aria-labelledby={`menu-tab-${group.category}`}
-        data-tab-panel
-        hidden={i !== 0}
-      >
-        <ul class="space-y-8">
-          {group.items.map((item) => {
-            const image = getLocalImage(imageMap.menu[item.id]?.localPath);
-            return (
-              <li class="flex gap-5">
-                {image && (
-                  <Image
-                    src={image}
-                    alt={item.name}
-                    widths={[200, 400]}
-                    sizes="112px"
-                    loading="lazy"
-                    class="h-28 w-28 flex-none object-cover"
-                  />
-                )}
-                <div class="min-w-0 flex-1">
-                  {/* 品名 ‥‥‥ 価格 を実際のお品書きのようにリーダー罫で結ぶ */}
-                  <div class="flex items-baseline gap-2">
-                    <p class="text-lg text-sumi">{item.name}</p>
-                    <span class="leader" aria-hidden="true" />
-                    <p class="whitespace-nowrap text-lg text-bengara tabular-nums">
-                      {formatPrice(item.price)}
-                    </p>
-                  </div>
-                  {item.description && (
-                    <p class="mt-2 text-sm leading-relaxed text-rikyu">{item.description}</p>
-                  )}
-                </div>
-              </li>
-            );
-          })}
+    groups.map((group) => (
+      <div>
+        <h3 class="heading mb-6 text-center text-sm text-shu sm:text-base">{group.category}</h3>
+        {/* 壁に貼った短冊に見立てて並べる */}
+        <ul class="flex flex-wrap justify-center gap-3 sm:gap-4">
+          {group.items.map((item) => (
+            <li class="tanzaku w-[5.5rem] sm:w-24">
+              <p class:list={['tanzaku-name text-kogecha', nameSizeClass(item.name)]}>
+                {item.name}
+              </p>
+              <p class="mt-3 whitespace-nowrap text-xs tabular-nums text-shu sm:text-sm">
+                {formatPrice(item.price)}
+              </p>
+            </li>
+          ))}
         </ul>
       </div>
     ))
   }
 </div>
-<TabsScript />

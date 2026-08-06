@@ -1,173 +1,175 @@
 @import "tailwindcss";
 
 /* ------------------------------------------------------------------
-   デザイントークン
-   高崎神社前という立地から採った配色。アクセントは神社の格子や玉垣に
-   使われる弁柄（べんがら）。使用面積は全体の3%以下に留める。
+   デザイントークン（昭和レトロポップ）
+   クリーム地に朱・からし・深緑。大きな円と斜ストライプを面で使う。
+   可愛くしつつ、価格・営業時間・電話は必ず読みやすく保つ。
    ------------------------------------------------------------------ */
 @theme {
-  --color-sumi: #1a1714; /* 墨：導入部・フッターの地 */
-  --color-sumi-line: #35302a; /* 墨地の上の罫線 */
-  --color-sumi-weak: #a8a29a; /* 墨地の上の弱い文字 */
-  --color-kinari: #fbf9f4; /* 生成り：情報部の紙面 */
-  --color-kinari-line: #e5e0d5; /* 紙面の罫線 */
-  --color-bengara: #8c3a2b; /* 弁柄：価格・現在地・リンク */
-  --color-rikyu: #7d7a6e; /* 利休鼠：ラベル・キャプション */
+  --color-cream: #fbf3e0; /* クリーム：全面の地 */
+  --color-cream-deep: #f3e7cc; /* 一段沈めた地。セクションの区切り */
+  --color-shu: #d8412f; /* 朱：見出し・帯・強調 */
+  --color-karashi: #e8b33a; /* からし：円・差し色 */
+  --color-midori: #2f6b4f; /* 深緑：もう一つの差し色 */
+  --color-kogecha: #4a3428; /* 焦茶：本文の文字色 */
+  --color-kogecha-dim: #8a7461; /* 薄い焦茶：ラベル・補足 */
 
-  /* 見出しはサブセット自己ホストのしっぽり明朝、以降はシステム明朝へ落とす。
-     本文は追加ダウンロードなしでMac/Win双方に明朝が当たるスタック。 */
-  --font-mincho:
-    "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", serif;
-  --font-heading:
-    "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", serif;
+  /* 見出しはサブセット自己ホストの Kiwi Maru。
+     本文は追加ダウンロードなしのシステム丸ゴシック／ゴシック。 */
+  --font-round:
+    "Hiragino Maru Gothic ProN", "Hiragino Kaku Gothic ProN", "Yu Gothic",
+    "YuGothic", "Meiryo", sans-serif;
+  --font-heading: "Kiwi Maru", "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
 }
 
-/* 店名表示用の筆文字フォント（ひらがな・カタカナ全体をサブセット済み） */
+/* 見出し専用。表示に使う文字だけを含むサブセット（各18KB前後）。
+   見出しの文言を増やしたら再生成が必要。手順は CLAUDE.md の
+   「見出しフォントのサブセット」を参照。 */
 @font-face {
-  font-family: "Yuji Boku";
+  font-family: "Kiwi Maru";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src:
-    url("/fonts/yuji-boku.woff2") format("woff2"),
-    url("/fonts/yuji-boku.ttf") format("truetype");
+  src: url("/fonts/kiwi-maru-400-subset.woff2") format("woff2");
+  unicode-range:
+    U+3044, U+3046, U+304a-3050, U+3053-305e, U+3064-3065, U+3068-306a, U+306e,
+    U+3075-3077, U+307e, U+3088-308a, U+308f, U+3093-3094, U+3099-309a, U+30a2,
+    U+30a4, U+30a6, U+30af-30b0, U+30b3-30b4, U+30b7-30ba, U+30bf-30c0, U+30c3,
+    U+30c6-30c9, U+30cf-30d1, U+30d5-30dd, U+30e9-30ea, U+30f3-30f4,
+    U+30fb-30fc, U+4e00, U+4e3c, U+4e88, U+4ed6, U+4ee5, U+4f11, U+4f1a,
+    U+5185-5186, U+5275, U+52df, U+5317, U+5408, U+5473, U+54c1, U+554f,
+    U+55b6, U+5916, U+5b9a, U+5bb4, U+5d0e, U+5e97, U+5f71, U+64ae, U+6599,
+    U+65e5, U+6642, U+6765, U+696d, U+7406, U+7d04, U+88c5, U+8981, U+898b,
+    U+89b3, U+8abf, U+91cd, U+9593, U+96c6, U+98df, U+9ad8;
 }
 
-/* 見出し・タブ専用。表示に使う文字だけを含むサブセット（約14KB）。
-   見出し・タブの文言を増やしたら再生成が必要。手順は CLAUDE.md の
-   「見出しフォントのサブセット」を参照。 */
 @font-face {
-  font-family: "Shippori Mincho";
+  font-family: "Kiwi Maru";
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url("/fonts/shippori-mincho-subset.woff2") format("woff2");
+  src: url("/fonts/kiwi-maru-500-subset.woff2") format("woff2");
   unicode-range:
-    U+3044, U+3046, U+304a, U+304d-304e, U+305b-305e, U+306a, U+306e, U+307e,
-    U+3089, U+3094, U+3099-309a, U+30a2, U+30a4, U+30a6, U+30af-30b0,
-    U+30b3-30b4, U+30b7-30ba, U+30c6-30c9, U+30cf-30d1, U+30d5-30d7,
-    U+30db-30dd, U+30e9-30ea, U+30f3-30f4, U+30fb-30fc, U+4e00, U+4e3c, U+4eba,
-    U+4ed6, U+4f1a, U+4f47, U+5185, U+5317, U+54c1, U+5916, U+5b9a, U+5bb4,
-    U+5d0e, U+5e97, U+6599, U+66f8, U+6848, U+6c42, U+7406, U+77e5, U+8217,
-    U+88c5, U+89b3, U+8abf, U+91cd, U+98df, U+9ad8;
+    U+3044, U+3046, U+304a-3050, U+3053-305e, U+3064-3065, U+3068-306a, U+306e,
+    U+3075-3077, U+307e, U+3088-308a, U+308f, U+3093-3094, U+3099-309a, U+30a2,
+    U+30a4, U+30a6, U+30af-30b0, U+30b3-30b4, U+30b7-30ba, U+30bf-30c0, U+30c3,
+    U+30c6-30c9, U+30cf-30d1, U+30d5-30dd, U+30e9-30ea, U+30f3-30f4,
+    U+30fb-30fc, U+4e00, U+4e3c, U+4e88, U+4ed6, U+4ee5, U+4f11, U+4f1a,
+    U+5185-5186, U+5275, U+52df, U+5317, U+5408, U+5473, U+54c1, U+554f,
+    U+55b6, U+5916, U+5b9a, U+5bb4, U+5d0e, U+5e97, U+5f71, U+64ae, U+6599,
+    U+65e5, U+6642, U+6765, U+696d, U+7406, U+7d04, U+88c5, U+8981, U+898b,
+    U+89b3, U+8abf, U+91cd, U+9593, U+96c6, U+98df, U+9ad8;
 }
 
-.font-brush {
-  font-family: "Yuji Boku", var(--font-mincho);
-}
-
-/* 明朝は字面が細いため、既定より行間を広く取って可読性を確保する */
 body {
-  font-family: var(--font-mincho);
+  font-family: var(--font-round);
   line-height: 1.9;
 }
 
-/* ------------------------------------------------------------------
-   セクション見出し（デスクトップは縦書き、モバイルは横書き）
-   ------------------------------------------------------------------ */
-.section-label {
+.heading {
   font-family: var(--font-heading);
   font-weight: 500;
-  letter-spacing: 0.25em;
-}
-
-@media (min-width: 640px) {
-  .section-label-vertical {
-    writing-mode: vertical-rl;
-    text-orientation: upright;
-    /* 縦書き時は letter-spacing が行末に余分な余白を作るため打ち消す */
-    margin-block-end: -0.25em;
-  }
-}
-
-/* ------------------------------------------------------------------
-   罫線タブ。選択状態は aria-selected だけで表現し、JS は属性の
-   付け替えのみを行う（マークアップとスクリプトでクラス名を
-   二重管理しないため）。
-   ------------------------------------------------------------------ */
-.tab {
-  font-family: var(--font-heading);
-  /* 狭い画面では字送りを詰める。セクションタブ（お品書き/佇まい/店舗案内/求人＝
-     全13文字）が 320px 幅でも一列に収まる値。 */
   letter-spacing: 0.08em;
-  color: var(--color-rikyu);
-  border-bottom: 2px solid transparent;
-  padding-bottom: 0.6rem;
-  transition:
-    color 0.2s,
-    border-color 0.2s;
-}
-
-@media (min-width: 640px) {
-  .tab {
-    letter-spacing: 0.15em;
-  }
-}
-
-.tab:hover {
-  color: var(--color-sumi);
-}
-
-.tab[aria-selected="true"] {
-  color: var(--color-sumi);
-  border-bottom-color: var(--color-bengara);
 }
 
 /* ------------------------------------------------------------------
-   お品書きのリーダー罫（品名 ‥‥‥ 価格）
-   flex の隙間を点線で埋める。品名・価格が長くても崩れない。
+   斜ストライプ。ポップさの土台になる面なので、色と角度をここで一元管理する。
+   密度を上げすぎると文字が読めなくなるため、必ず薄く敷く。
    ------------------------------------------------------------------ */
-.leader {
+.stripe {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-karashi) 0,
+    var(--color-karashi) 10px,
+    transparent 10px,
+    transparent 26px
+  );
+}
+
+/* 濃い地の上に敷くとき用（白側で線を出す） */
+.stripe-light {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgb(255 255 255 / 22%) 0,
+    rgb(255 255 255 / 22%) 10px,
+    transparent 10px,
+    transparent 26px
+  );
+}
+
+/* ------------------------------------------------------------------
+   短冊のお品書き
+   壁に貼った短冊に見立て、品名を縦書き、価格を下に横書きで置く。
+   高さを揃えると壁一面に貼った感じになるので min-height で合わせる。
+   ------------------------------------------------------------------ */
+.tanzaku {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 13rem;
+  padding: 0.9rem 0.5rem 0.7rem;
+  background: var(--color-cream);
+  border: 2px solid var(--color-kogecha);
+  /* 短冊を少しずつ傾けて、貼り付けた風にする（:nth-child で交互に振る） */
+  transform: rotate(-0.8deg);
+}
+
+.tanzaku:nth-child(even) {
+  transform: rotate(0.9deg);
+}
+
+.tanzaku-name {
+  writing-mode: vertical-rl;
+  font-family: var(--font-heading);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1.35;
   flex: 1 1 auto;
-  align-self: end;
-  margin-bottom: 0.35em;
-  border-bottom: 1px dotted var(--color-kinari-line);
-  min-width: 1.5rem;
 }
 
 /* ------------------------------------------------------------------
-   ヒーロー：動画を再生し、3秒後にうっすら暗転させながら店名を大きく表示する。
-   スクロールはこのセクションの外に出るだけなので、待たずに下の内容へ進める。
+   丸い看板枠。ヒーローと見出しで使う。
    ------------------------------------------------------------------ */
-.hero-fallback-image {
-  display: none;
+.signboard {
+  border: 3px solid var(--color-kogecha);
+  border-radius: 1.5rem;
+  background: var(--color-cream);
+  box-shadow: 6px 6px 0 var(--color-kogecha);
 }
 
-/* 店名が出るまでの待ち時間。変えるならこの1か所だけを触る */
+/* 見出しの丸バッジ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1.2rem;
+  border: 2px solid var(--color-kogecha);
+  border-radius: 999px;
+  background: var(--color-shu);
+  color: var(--color-cream);
+  font-family: var(--font-heading);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+/* ------------------------------------------------------------------
+   ヒーローの円。ゆっくり上下させて賑やかさを出す。
+   ------------------------------------------------------------------ */
 @media (prefers-reduced-motion: no-preference) {
-  .hero-video,
-  .hero-reveal {
-    --hero-reveal-delay: 3s;
+  .bob {
+    animation: bob 4s ease-in-out infinite;
   }
-  .hero-video {
-    animation: hero-video-dim 1s ease-in-out var(--hero-reveal-delay) forwards;
-  }
-  .hero-reveal {
-    opacity: 0;
-    transform: scale(0.94);
-    animation: hero-reveal-in 1.2s ease-out var(--hero-reveal-delay) forwards;
+  .bob-slow {
+    animation: bob 6s ease-in-out infinite;
   }
 }
 
-@keyframes hero-video-dim {
-  to {
-    opacity: 0.3;
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
   }
-}
-
-@keyframes hero-reveal-in {
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* 動きを抑えたい利用者には動画の代わりに静止画を表示し、店名は最初から見せる */
-@media (prefers-reduced-motion: reduce) {
-  .hero-video {
-    display: none;
-  }
-  .hero-fallback-image {
-    display: block;
+  50% {
+    transform: translateY(-10px);
   }
 }

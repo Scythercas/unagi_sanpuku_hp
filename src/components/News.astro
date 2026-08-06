@@ -19,22 +19,25 @@ function formatDate(iso: string) {
 
 {
   items.length > 0 && (
-    <Section id="news" label="お知らせ">
-      <ul class="max-w-2xl">
+    <Section id="news" label="おしらせ" deep>
+      <ul class="mx-auto max-w-2xl space-y-5">
         {items.map((item) => (
-          <li class="border-b border-kinari-line py-6 first:pt-0">
+          <li class="signboard px-6 py-5">
             <div class="flex flex-wrap items-center gap-3">
-              <time datetime={item.publishedAt} class="text-sm tabular-nums text-rikyu">
+              <time datetime={item.publishedAt} class="text-sm tabular-nums text-kogecha-dim">
                 {formatDate(item.publishedAt)}
               </time>
               {item.important && (
-                <span class="border border-bengara px-2 py-0.5 text-xs tracking-wider text-bengara">
+                <span class="heading rounded-full bg-shu px-3 py-0.5 text-xs text-cream">
                   重要
                 </span>
               )}
             </div>
-            <h3 class="mt-2 text-lg text-sumi">{item.title}</h3>
-            <div class="mt-2 space-y-2 text-sm leading-relaxed text-rikyu" set:html={item.body} />
+            <h3 class="heading mt-2 text-lg text-kogecha">{item.title}</h3>
+            <div
+              class="mt-2 space-y-2 text-sm leading-relaxed text-kogecha-dim"
+              set:html={item.body}
+            />
           </li>
         ))}
       </ul>
