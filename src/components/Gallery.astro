@@ -50,17 +50,14 @@ const { groups } = Astro.props;
             return (
               <li class="album-item" style={`--r: ${ratio.toFixed(4)}`}>
                 <figure>
-                  <div class="album-mount">
-                    <Image
-                      src={image}
-                      alt={item.caption ?? group.type}
-                      widths={[400, 800]}
-                      sizes={sizes}
-                      loading="lazy"
-                      class="block h-auto w-full"
-                    />
-                    <span class="album-corners" aria-hidden="true" />
-                  </div>
+                  <Image
+                    src={image}
+                    alt={item.caption ?? group.type}
+                    widths={[400, 800]}
+                    sizes={sizes}
+                    loading="lazy"
+                    class="block h-auto w-full"
+                  />
                   {item.caption && (
                     <figcaption class="mt-2 text-xs text-rikyu">{item.caption}</figcaption>
                   )}
