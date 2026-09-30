@@ -39,21 +39,32 @@ const { groups } = Astro.props;
         data-tab-panel
         hidden={i !== 0}
       >
-        <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6">
+        <ul class="album">
           {group.items.map((item) => {
             const image = getLocalImage(imageMap.gallery[item.id]?.localPath);
             if (!image) return null;
+            // 縦横比。行内の伸び率と基準幅に使う（global.css の .album-item）
+            const ratio = image.width / image.height;
+            // 表示幅の上限の目安：基準の行高（120px / 220px）から行内で最大1.5倍まで伸びる（global.css の max-width）
+            const sizes = `(min-width: 640px) ${Math.ceil(ratio * 220 * 1.5)}px, ${Math.ceil(ratio * 120 * 1.5)}px`;
             return (
-              <li>
-                <Image
-                  src={image}
-                  alt={item.caption ?? group.type}
-                  widths={[400, 800]}
-                  sizes="(min-width: 640px) 33vw, 50vw"
-                  loading="lazy"
-                  class="aspect-[4/3] w-full object-cover"
-                />
-                {item.caption && <p class="mt-2 text-xs text-rikyu">{item.caption}</p>}
+              <li class="album-item" style={`--r: ${ratio.toFixed(4)}`}>
+                <figure>
+                  <div class="album-mount">
+                    <Image
+                      src={image}
+                      alt={item.caption ?? group.type}
+                      widths={[400, 800]}
+                      sizes={sizes}
+                      loading="lazy"
+                      class="block h-auto w-full"
+                    />
+                    <span class="album-corners" aria-hidden="true" />
+                  </div>
+                  {item.caption && (
+                    <figcaption class="mt-2 text-xs text-rikyu">{item.caption}</figcaption>
+                  )}
+                </figure>
               </li>
             );
           })}

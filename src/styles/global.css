@@ -11,6 +11,7 @@
   --color-sumi-weak: #a8a29a; /* 墨地の上の弱い文字 */
   --color-kinari: #fbf9f4; /* 生成り：情報部の紙面 */
   --color-kinari-line: #e5e0d5; /* 紙面の罫線 */
+  --color-daishi: #fffdf8; /* 台紙：写真帖で写真を貼る紙。生成りより一段明るい */
   --color-bengara: #8c3a2b; /* 弁柄：価格・現在地・リンク */
   --color-rikyu: #7d7a6e; /* 利休鼠：ラベル・キャプション */
 
@@ -123,6 +124,63 @@ body {
   margin-bottom: 0.35em;
   border-bottom: 1px dotted var(--color-kinari-line);
   min-width: 1.5rem;
+}
+
+/* ------------------------------------------------------------------
+   写真帖：高さ揃えの横並び（justified rows）。
+   各写真の flex-grow と flex-basis に縦横比（--r）を掛けるため、行内で
+   伸びても全写真の高さが揃い、縦長・横長とも切り抜かずに並ぶ。
+   写真が少なく行が埋まらない場合も、行高が基準の1.5倍に達したところで
+   伸びを止め（max-width）、余った幅は中央に寄せて見開きのように収める。
+   ------------------------------------------------------------------ */
+.album {
+  --album-row: 120px; /* 伸びる前の基準の行高 */
+  --album-pad: 5px; /* 台紙の余白 */
+  --album-corner: 10px; /* 写真コーナーの一辺 */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+
+@media (min-width: 640px) {
+  .album {
+    --album-row: 220px;
+    --album-pad: 8px;
+    --album-corner: 14px;
+    gap: 1.5rem;
+  }
+}
+
+.album-item {
+  min-width: 0;
+  flex: var(--r) 1 calc(var(--r) * var(--album-row) + 2 * var(--album-pad));
+  max-width: calc(var(--r) * var(--album-row) * 1.5 + 2 * var(--album-pad));
+}
+
+/* 台紙に写真を貼り、四隅を写真コーナー（三角の留め具）で押さえる */
+.album-mount {
+  position: relative;
+  padding: var(--album-pad);
+  background-color: var(--color-daishi);
+  border: 1px solid var(--color-kinari-line);
+  box-shadow: 0 1px 3px rgb(26 23 20 / 0.08);
+}
+
+.album-corners {
+  position: absolute;
+  inset: calc(var(--album-pad) - 3px);
+  pointer-events: none;
+  --c: var(--color-sumi);
+  background:
+    linear-gradient(135deg, var(--c) 50%, transparent 50%) top left,
+    linear-gradient(225deg, var(--c) 50%, transparent 50%) top right,
+    linear-gradient(45deg, var(--c) 50%, transparent 50%) bottom left,
+    linear-gradient(315deg, var(--c) 50%, transparent 50%) bottom right;
+  background-size: var(--album-corner) var(--album-corner);
+  background-repeat: no-repeat;
+  opacity: 0.85;
 }
 
 /* ------------------------------------------------------------------
