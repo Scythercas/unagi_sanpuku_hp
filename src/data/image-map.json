@@ -1,29 +1,102 @@
 {
-  "generatedAt": "2026-08-05T15:18:35.854Z",
-  "menu": {},
+  "generatedAt": "2026-09-30T10:09:42.309Z",
+  "menu": {
+    "yv3d47203": {
+      "localPath": "/src/assets/images/06c6c65669fa6448.jpg",
+      "width": 3024,
+      "height": 3024,
+      "alt": "上うな重"
+    },
+    "9u0sjz0nqoiu": {
+      "localPath": "/src/assets/images/b5ae106eac54e6a2.jpg",
+      "width": 1603,
+      "height": 1603,
+      "alt": "だし焼き玉子"
+    },
+    "1ka4hk89z_n": {
+      "localPath": "/src/assets/images/c029c6afe6b11c83.jpg",
+      "width": 2574,
+      "height": 2574,
+      "alt": "きも焼き"
+    },
+    "e3g661rqb": {
+      "localPath": "/src/assets/images/2132007278ad9324.jpg",
+      "width": 1275,
+      "height": 1275,
+      "alt": "うな丼"
+    }
+  },
   "gallery": {
-    "8q0et5qnj": {
-      "localPath": "/src/assets/images/f042673e9a551481.jpg",
-      "width": 960,
-      "height": 1706,
+    "f5vrlb6qv": {
+      "localPath": "/src/assets/images/e12a8471caa25fa5.jpg",
+      "width": 2776,
+      "height": 3701,
       "alt": ""
     },
-    "yejt-0sdd": {
-      "localPath": "/src/assets/images/2a63f8be06dbe10d.jpg",
-      "width": 2160,
-      "height": 2880,
+    "hs2tjydnb": {
+      "localPath": "/src/assets/images/93c48e4c488bb3a1.jpg",
+      "width": 4032,
+      "height": 3024,
       "alt": ""
     },
-    "em8vzui8-t3": {
-      "localPath": "/src/assets/images/4fafce7e0c4fad2f.jpg",
+    "6d3sguj4ywcy": {
+      "localPath": "/src/assets/images/5cbdb810423308db.jpg",
+      "width": 4032,
+      "height": 3024,
+      "alt": ""
+    },
+    "ut78n2xy3vf": {
+      "localPath": "/src/assets/images/816f238ce488c949.jpg",
+      "width": 4032,
+      "height": 3024,
+      "alt": ""
+    },
+    "iqdxp38a9tzk": {
+      "localPath": "/src/assets/images/0b1671160d9acc6e.jpg",
       "width": 1330,
       "height": 1773,
       "alt": ""
     },
-    "u5fofi_pdsoj": {
-      "localPath": "/src/assets/images/04839ed5aac31797.jpg",
-      "width": 2160,
-      "height": 2880,
+    "fn-3r2bgnovg": {
+      "localPath": "/src/assets/images/c5c0e534b80e4e46.jpg",
+      "width": 5712,
+      "height": 4284,
+      "alt": ""
+    },
+    "38j_-dnrs": {
+      "localPath": "/src/assets/images/14e5df427ae99396.jpg",
+      "width": 4032,
+      "height": 3024,
+      "alt": ""
+    },
+    "5gy1u_3x6o": {
+      "localPath": "/src/assets/images/116605a4adce3707.jpg",
+      "width": 4032,
+      "height": 3024,
+      "alt": ""
+    },
+    "gho-8el7x": {
+      "localPath": "/src/assets/images/48d7eb219d02374e.jpg",
+      "width": 1280,
+      "height": 960,
+      "alt": ""
+    },
+    "qc9699ex0": {
+      "localPath": "/src/assets/images/78a578eed30b6851.jpg",
+      "width": 960,
+      "height": 1280,
+      "alt": ""
+    },
+    "vthy_4lr-am": {
+      "localPath": "/src/assets/images/76acccc6e60ccb87.jpg",
+      "width": 819,
+      "height": 1092,
+      "alt": ""
+    },
+    "gwm7pku0rtv": {
+      "localPath": "/src/assets/images/f32b466dc430a67a.jpg",
+      "width": 4032,
+      "height": 3024,
       "alt": ""
     }
   }
