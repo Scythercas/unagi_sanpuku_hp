@@ -38,7 +38,9 @@ MICROCMS_API_KEY=xxxxxxxx         # GET 専用キー
 | `docs/SETUP.md` | 環境構築手順（ゼロ→公開） |
 | `docs/OPERATIONS.md` | 運用引き継ぎ書（アカウント・バックアップ・移管） |
 | `docs/CONTENT-CHECKLIST.md` | 顧客確認・素材の未確定事項 |
-| `docs/CONTENT-DRAFT.md` | microCMS 投入用コンテンツ下書きと入力進捗 |
+| `docs/CONTENT-DRAFT.md` | microCMS の現在の登録内容（コンテンツ登録状況） |
+| `docs/MENU.md` | お品書き全品（品名・価格・ひとこと・カテゴリ・表示順） |
+| `docs/TODO.md` | 打合せで決まった残作業 |
 
 ## 重要な約束事（詳細は CLAUDE.md）
 

@@ -58,7 +58,7 @@
 │   │   ├─ content.ts            # menu/gallery のカテゴリ/種別グルーピング
 │   │   └─ config.ts             # GA4 測定 ID 等のハードコード設定
 │   ├─ layouts/
-│   ├─ components/                # Hero/Menu/Gallery/ShopInfo/Recruit/News/Footer/TabsScript 等
+│   ├─ components/                # Hero/Menu/Gallery/ShopInfo/Recruit/News/Footer/TabsScript/InstagramLink 等
 │   └─ pages/
 │       ├─ index.astro           # メインの1ページ（セクション構成）
 │       ├─ privacy.astro         # プライバシーポリシー（GA 利用のため必須）
@@ -232,10 +232,12 @@ Astro 側の最適化：
 - `docs/SETUP.md` … 環境構築手順
 - `docs/OPERATIONS.md` … 運用・引き継ぎ
 - `docs/CONTENT-CHECKLIST.md` … 顧客確認・素材の未確定事項
-- `docs/CONTENT-DRAFT.md` … microCMS 投入用コンテンツ下書きと入力進捗
+- `docs/CONTENT-DRAFT.md` … microCMS の現在の登録内容（コンテンツ登録状況）
+- `docs/MENU.md` … お品書き全品（品名・価格・ひとこと・カテゴリ・表示順）
+- `docs/TODO.md` … 打合せで決まった残作業
 
 ## 未確定プレースホルダ（実装時に確定値へ置換）
 
-`{{DOMAIN}}`（既定 sanpuku-unagi.com・**ドメイン未購入のため未確定**。購入までコードは既定値のまま運用）、店舗の駐車場・席数・テイクアウト/出前対応の有無等（`docs/CONTENT-CHECKLIST.md` 参照）。
+`{{DOMAIN}}`（既定 sanpuku-unagi.com・**ドメイン未購入のため未確定**。購入までコードは既定値のまま運用。Instagram のアカウント名は `unagi_sampuku` で既定ドメインと綴りが異なる）。その他の未確定事項は `docs/CONTENT-CHECKLIST.md` と `docs/TODO.md` を参照。
 
 確定済み: `{{GITHUB_USERNAME}}` = `Scythercas`, `{{REPO_NAME}}` = `unagi_sanpuku_hp`（<https://github.com/Scythercas/unagi_sanpuku_hp>）。`{{MICROCMS_SERVICE_DOMAIN}}` = `unagisanpuku`。`{{GA4_MEASUREMENT_ID}}` = `G-X7TDGRCV1T`（`src/lib/config.ts` にハードコード済み）。
