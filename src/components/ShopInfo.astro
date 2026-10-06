@@ -14,7 +14,8 @@ const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(`${shop.name}
 
 const seats = [
   shop.seatsCounter ? `カウンター ${shop.seatsCounter}席` : null,
-  shop.seatsTable ? `テーブル ${shop.seatsTable}席` : null,
+  // 座卓を置いた座敷のため「テーブル座敷」と呼ぶ（店からの回答の表記に合わせる）
+  shop.seatsTable ? `テーブル座敷 ${shop.seatsTable}席` : null,
 ]
   .filter((v): v is string => Boolean(v))
   .join(' / ');
