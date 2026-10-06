@@ -1,5 +1,6 @@
 ---
 import type { Shop } from '../lib/microcms';
+import InstagramLink from './InstagramLink.astro';
 import TelLink from './TelLink.astro';
 
 export interface Props {
@@ -12,13 +13,17 @@ const { shop } = Astro.props;
 // 店舗情報が更新されても地図の位置は自動的に追従する）
 const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(`${shop.name} ${shop.address}`)}&output=embed`;
 
+// 席数は改行で並べる（テーブル座敷は卓の内訳があればそれを出す）
 const seats = [
   shop.seatsCounter ? `カウンター ${shop.seatsCounter}席` : null,
-  // 座卓を置いた座敷のため「テーブル座敷」と呼ぶ（店からの回答の表記に合わせる）
-  shop.seatsTable ? `テーブル座敷 ${shop.seatsTable}席` : null,
+  shop.seatsTableDetail
+    ? `テーブル座敷 ${shop.seatsTableDetail}`
+    : shop.seatsTable
+      ? `テーブル座敷 ${shop.seatsTable}席`
+      : null,
 ]
   .filter((v): v is string => Boolean(v))
-  .join(' / ');
+  .join('\n');
 
 const rows: { label: string; value: string }[] = [
   { label: '営業時間', value: shop.hours },
@@ -26,13 +31,12 @@ const rows: { label: string; value: string }[] = [
   { label: '住所', value: shop.address },
   ...(shop.parking ? [{ label: '駐車場', value: shop.parking }] : []),
   ...(seats ? [{ label: '席数', value: seats }] : []),
-  ...(shop.takeout !== undefined
-    ? [{ label: 'テイクアウト', value: shop.takeout ? '対応' : '非対応' }]
+  ...(shop.payment ? [{ label: 'お支払い', value: shop.payment }] : []),
+  ...(shop.takeout
+    ? [{ label: 'テイクアウト', value: shop.takeoutNote ? `対応（${shop.takeoutNote}）` : '対応' }]
     : []),
-  ...(shop.delivery !== undefined
-    ? [{ label: '出前', value: shop.delivery ? '対応' : '非対応' }]
-    : []),
-  ...(shop.accessNote ? [{ label: 'アクセス', value: shop.accessNote }] : []),
+  // 出前は対応している場合だけ載せる（「非対応」をわざわざ並べない）
+  ...(shop.delivery ? [{ label: '出前', value: '対応' }] : []),
   ...(shop.notes ? [{ label: 'ご案内', value: shop.notes }] : []),
 ];
 ---
@@ -55,6 +59,16 @@ const rows: { label: string; value: string }[] = [
         </TelLink>
       </dd>
     </div>
+    {
+      shop.instagramUrl && (
+        <div class="grid grid-cols-[6.5rem_1fr] gap-4 border-b border-kinari-line py-4">
+          <dt class="text-rikyu">Instagram</dt>
+          <dd>
+            <InstagramLink url={shop.instagramUrl} class="text-lg text-bengara" />
+          </dd>
+        </div>
+      )
+    }
   </dl>
   <div>
     <iframe

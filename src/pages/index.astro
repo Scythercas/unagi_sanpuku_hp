@@ -44,11 +44,12 @@ const description =
 const menuGroups = groupMenuByCategory(menu);
 const galleryGroups = groupGalleryByType(gallery);
 
-// ラベルはカタカナ（メニュー/ギャラリー）ではなく和語に寄せ、老舗の語彙で統一する
+// ラベルはカタカナ（メニュー/ギャラリー）ではなく和語に寄せ、老舗の語彙で統一する。
+// 来店に直結する店舗案内（場所・営業時間・電話）を最初に開いておく
 const sectionTabs = [
+  { id: 'access', label: '店舗案内' },
   menuGroups.length > 0 ? { id: 'menu', label: 'お品書き' } : null,
   galleryGroups.length > 0 ? { id: 'gallery', label: '写真帖' } : null,
-  { id: 'access', label: '店舗案内' },
   recruit.isOpen ? { id: 'recruit', label: '求人' } : null,
 ].filter((tab): tab is { id: string; label: string } => tab !== null);
 ---

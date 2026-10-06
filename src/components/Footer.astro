@@ -1,5 +1,6 @@
 ---
 import type { Shop } from '../lib/microcms';
+import InstagramLink from './InstagramLink.astro';
 import TelLink from './TelLink.astro';
 
 export interface Props {
@@ -10,34 +11,23 @@ const { shop } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
-{/* 墨地の締め。電話は最も重要な導線なので、どのページからも必ず届くようここに置く */}
+{/* 墨地の締め。住所・営業時間は店舗案内に任せ、ここは店名と連絡手段だけに絞る。
+    電話は最も重要な導線なので、どのページからも必ず届くようここに置く */}
 <footer class="bg-sumi px-5 py-20 text-kinari">
   <div class="mx-auto max-w-5xl">
-    <div class="flex flex-col gap-12 sm:flex-row sm:items-start sm:justify-between">
-      <div>
-        <p class="font-brush text-4xl leading-none">{shop.name}</p>
-        <p class="mt-6 text-sm leading-relaxed text-sumi-weak">{shop.address}</p>
-        <p class="mt-2 whitespace-pre-line text-sm leading-relaxed text-sumi-weak">
-          {shop.hours}
-        </p>
-        <p class="mt-2 text-sm text-sumi-weak">定休日　{shop.closedDays}</p>
-      </div>
+    <div class="flex flex-col gap-10 sm:flex-row sm:items-end sm:justify-between">
+      <p class="font-brush text-4xl leading-none">{shop.name}</p>
 
-      <div class="sm:text-right">
-        <p class="text-xs tracking-[0.3em] text-sumi-weak">ご予約・お問い合わせ</p>
-        <TelLink tel={shop.tel} class="mt-3 block text-3xl tabular-nums text-kinari">
+      <div class="flex flex-col gap-4 sm:items-end">
+        <TelLink tel={shop.tel} class="text-3xl tabular-nums text-kinari">
           {shop.tel}
         </TelLink>
         {
           shop.instagramUrl && (
-            <a
-              href={shop.instagramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="mt-6 inline-block border-b border-sumi-line pb-1 text-sm text-sumi-weak transition hover:text-kinari"
-            >
-              Instagram
-            </a>
+            <InstagramLink
+              url={shop.instagramUrl}
+              class="text-base text-kinari transition hover:text-sumi-weak"
+            />
           )
         }
       </div>

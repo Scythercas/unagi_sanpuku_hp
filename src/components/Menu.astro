@@ -22,14 +22,14 @@ function formatPrice(price: number) {
         <button
           type="button"
           role="tab"
-          id={`menu-tab-${group.category}`}
-          aria-controls={`menu-panel-${group.category}`}
+          id={`menu-tab-${group.label}`}
+          aria-controls={`menu-panel-${group.label}`}
           aria-selected={i === 0 ? 'true' : 'false'}
           data-tab-button
-          data-target={`menu-panel-${group.category}`}
+          data-target={`menu-panel-${group.label}`}
           class="tab -mb-px text-sm sm:text-base"
         >
-          {group.category}
+          {group.label}
         </button>
       ))
     }
@@ -37,9 +37,9 @@ function formatPrice(price: number) {
   {
     groups.map((group, i) => (
       <div
-        id={`menu-panel-${group.category}`}
+        id={`menu-panel-${group.label}`}
         role="tabpanel"
-        aria-labelledby={`menu-tab-${group.category}`}
+        aria-labelledby={`menu-tab-${group.label}`}
         data-tab-panel
         hidden={i !== 0}
       >

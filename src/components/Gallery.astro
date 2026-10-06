@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import type { GalleryGroup } from '../lib/content';
+import { galleryTabLabel, type GalleryGroup } from '../lib/content';
 import { getLocalImage, imageMap } from '../lib/images';
 import TabsScript from './TabsScript.astro';
 
@@ -25,7 +25,7 @@ const { groups } = Astro.props;
           data-target={`gallery-panel-${group.type}`}
           class="tab -mb-px text-sm sm:text-base"
         >
-          {group.type}
+          {galleryTabLabel(group.type)}
         </button>
       ))
     }
@@ -52,7 +52,7 @@ const { groups } = Astro.props;
                 <figure>
                   <Image
                     src={image}
-                    alt={item.caption ?? group.type}
+                    alt={item.caption ?? galleryTabLabel(group.type)}
                     widths={[400, 800]}
                     sizes={sizes}
                     loading="lazy"
