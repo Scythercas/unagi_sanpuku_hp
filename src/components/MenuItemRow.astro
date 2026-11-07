@@ -1,0 +1,39 @@
+---
+import { Image } from 'astro:assets';
+import type { MenuItem } from '../lib/microcms';
+import { getLocalImage, imageMap } from '../lib/images';
+
+export interface Props {
+  item: MenuItem;
+}
+
+const { item } = Astro.props;
+const image = getLocalImage(imageMap.menu[item.id]?.localPath);
+---
+
+<li class="flex gap-5">
+  {
+    image && (
+      <Image
+        src={image}
+        alt={item.name}
+        widths={[200, 400]}
+        sizes="96px"
+        loading="lazy"
+        class="h-24 w-24 flex-none object-cover"
+      />
+    )
+  }
+  <div class="min-w-0 flex-1">
+    {/* 品名 ‥‥‥ 価格 を実際のお品書きのようにリーダー罫で結ぶ。
+        品書きの慣習に倣い、数字を主に「円」を一回り小さく添える */}
+    <div class="flex items-baseline gap-2">
+      <p class="text-base text-sumi sm:text-lg">{item.name}</p>
+      <span class="leader" aria-hidden="true"></span>
+      <p class="whitespace-nowrap text-lg text-bengara tabular-nums">
+        {item.price.toLocaleString('ja-JP')}<span class="text-sm">円</span>
+      </p>
+    </div>
+    {item.description && <p class="mt-1 text-sm leading-relaxed text-rikyu">{item.description}</p>}
+  </div>
+</li>

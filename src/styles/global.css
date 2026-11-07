@@ -151,6 +151,24 @@ body {
   min-width: 1.5rem;
 }
 
+/* 品数の多いカテゴリの「ほか○品を見る」。標準の三角は消し、細い山形を開閉で反転させる */
+.menu-more::-webkit-details-marker {
+  display: none;
+}
+
+.menu-more-mark {
+  width: 0.45em;
+  height: 0.45em;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: translateY(-0.15em) rotate(45deg);
+  transition: transform var(--default-transition-duration) var(--ease-soft);
+}
+
+details[open] > .menu-more .menu-more-mark {
+  transform: translateY(0.1em) rotate(225deg);
+}
+
 /* ------------------------------------------------------------------
    スクロールに合わせた出現。CSS のスクロール連動アニメーションのみで
    実装し JS を使わない。未対応ブラウザと動きを抑えたい利用者には

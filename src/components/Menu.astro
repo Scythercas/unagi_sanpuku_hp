@@ -1,7 +1,6 @@
 ---
-import { Image } from 'astro:assets';
 import type { MenuGroup } from '../lib/content';
-import { getLocalImage, imageMap } from '../lib/images';
+import MenuItemRow from './MenuItemRow.astro';
 
 export interface Props {
   groups: MenuGroup[];
@@ -9,59 +8,55 @@ export interface Props {
 
 const { groups } = Astro.props;
 
-// 品書きの慣習に倣い、数字を主に「円」を一回り小さく添える
-function formatPrice(price: number) {
-  return price.toLocaleString('ja-JP');
-}
+// 品数の多いカテゴリ（一品料理30品・御飲物17品など）は、最初の数品だけ見せて残りを畳む。
+// 全品を開いたままだとスマホでお品書きだけで画面7枚分になるため。
+// 鰻の品（うな丼・うな重・定食）は品数が少なく、常に全品が見える。
+const FOLD_OVER = 10;
+const PREVIEW = 6;
 ---
 
-{/* 全カテゴリを一度に見せる（タブで隠すと、品数が少ないカテゴリが1品だけの寂しい紙面になる）。
-    デスクトップは2段組みにし、カテゴリの途中で段を割らない。 */}
+{/* 全カテゴリの見出しを一度に見せる（タブで隠すと、品数の少ないカテゴリが1品だけの寂しい紙面になる）。
+    768px 以上は2段組みにし、カテゴリの途中で段を割らない。 */}
 <div class="gap-16 md:columns-2">
   {
-    groups.map((group) => (
-      <section class="reveal mb-14 break-inside-avoid last:mb-0" aria-labelledby={`menu-${group.category}`}>
-        <h3
-          id={`menu-${group.category}`}
-          class="section-label mb-6 flex items-center gap-4 text-base text-sumi sm:text-lg"
+    groups.map((group) => {
+      const folds = group.items.length > FOLD_OVER;
+      const shown = folds ? group.items.slice(0, PREVIEW) : group.items;
+      const rest = folds ? group.items.slice(PREVIEW) : [];
+      return (
+        <section
+          class="reveal mb-14 break-inside-avoid last:mb-0"
+          aria-labelledby={`menu-${group.category}`}
         >
-          {group.category}
-          <span class="h-px flex-1 bg-kinari-line" aria-hidden="true" />
-        </h3>
-        <ul class="space-y-5">
-          {group.items.map((item) => {
-            const image = getLocalImage(imageMap.menu[item.id]?.localPath);
-            return (
-              <li class="flex gap-5">
-                {image && (
-                  <Image
-                    src={image}
-                    alt={item.name}
-                    widths={[200, 400]}
-                    sizes="96px"
-                    loading="lazy"
-                    class="h-24 w-24 flex-none object-cover"
-                  />
-                )}
-                <div class="min-w-0 flex-1">
-                  {/* 品名 ‥‥‥ 価格 を実際のお品書きのようにリーダー罫で結ぶ */}
-                  <div class="flex items-baseline gap-2">
-                    <p class="text-base text-sumi sm:text-lg">{item.name}</p>
-                    <span class="leader" aria-hidden="true" />
-                    <p class="whitespace-nowrap text-lg text-bengara tabular-nums">
-                      {formatPrice(item.price)}
-                      <span class="text-sm">円</span>
-                    </p>
-                  </div>
-                  {item.description && (
-                    <p class="mt-1 text-sm leading-relaxed text-rikyu">{item.description}</p>
-                  )}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
-    ))
+          <h3
+            id={`menu-${group.category}`}
+            class="section-label mb-6 flex items-center gap-4 text-base text-sumi sm:text-lg"
+          >
+            {group.category}
+            <span class="h-px flex-1 bg-kinari-line" aria-hidden="true" />
+          </h3>
+          <ul class="space-y-5">
+            {shown.map((item) => (
+              <MenuItemRow item={item} />
+            ))}
+          </ul>
+          {rest.length > 0 && (
+            // 開閉はブラウザ標準の details に任せ、JS を使わない
+            <details class="group mt-2">
+              <summary class="menu-more inline-flex cursor-pointer list-none items-center gap-2 py-3 text-sm text-bengara">
+                <span class="group-open:hidden">ほか{rest.length}品を見る</span>
+                <span class="hidden group-open:inline">畳む</span>
+                <span class="menu-more-mark" aria-hidden="true" />
+              </summary>
+              <ul class="mt-3 space-y-5">
+                {rest.map((item) => (
+                  <MenuItemRow item={item} />
+                ))}
+              </ul>
+            </details>
+          )}
+        </section>
+      );
+    })
   }
 </div>

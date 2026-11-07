@@ -46,10 +46,12 @@ const galleryGroups = groupGalleryByType(gallery);
 
 // ラベルはカタカナ（メニュー/ギャラリー）ではなく和語に寄せ、老舗の語彙で統一する。
 // 中身の無いセクション・非公開の求人はそもそも出さない（目次にも載せない）。
+// 来店に直結する店舗案内（電話・営業時間・地図）を先頭に置く（2026-10-06 の打合せで決定）。
+// お品書きは全60品と長く、後ろに置くと店舗案内がスマホで画面8枚分も下に沈むため。
 const sections = [
+  { id: 'access', label: '店舗案内' },
   menuGroups.length > 0 ? { id: 'menu', label: 'お品書き' } : null,
   galleryGroups.length > 0 ? { id: 'gallery', label: '佇まい' } : null,
-  { id: 'access', label: '店舗案内' },
   recruit.isOpen ? { id: 'recruit', label: '求人' } : null,
 ].filter((section): section is { id: string; label: string } => section !== null);
 ---
