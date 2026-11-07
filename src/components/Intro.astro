@@ -8,13 +8,12 @@ const { catchcopy } = Astro.props;
 
 {
   catchcopy && (
-    <section id="about" class="bg-kinari px-5 py-28 sm:py-36">
-      <div class="mx-auto max-w-2xl">
-        <p class="whitespace-pre-line text-center text-lg leading-[2.4] tracking-wide text-sumi sm:text-xl">
+    <section id="about" class="bg-kinari px-5 pt-24 pb-16 sm:pt-32 sm:pb-20">
+      <div class="mx-auto flex max-w-5xl justify-center">
+        {/* モバイルは横組み・中央揃え、デスクトップは縦組みで天（上端）揃え */}
+        <p class="intro-vertical reveal whitespace-pre-line text-center text-lg leading-[2.4] tracking-[0.12em] text-sumi sm:text-start sm:text-xl sm:leading-[2.2]">
           {catchcopy}
         </p>
-        {/* 一言紹介と本編を隔てる一本の罫。老舗の品書きの区切りに倣う */}
-        <div class="mx-auto mt-16 h-px w-16 bg-bengara" />
       </div>
     </section>
   )

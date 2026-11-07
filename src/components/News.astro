@@ -22,7 +22,7 @@ function formatDate(iso: string) {
     <Section id="news" label="お知らせ">
       <ul class="max-w-2xl">
         {items.map((item) => (
-          <li class="border-b border-kinari-line py-6 first:pt-0">
+          <li class="reveal border-b border-kinari-line py-6 first:pt-0">
             <div class="flex flex-wrap items-center gap-3">
               <time datetime={item.publishedAt} class="text-sm tabular-nums text-rikyu">
                 {formatDate(item.publishedAt)}
@@ -34,7 +34,7 @@ function formatDate(iso: string) {
               )}
             </div>
             <h3 class="mt-2 text-lg text-sumi">{item.title}</h3>
-            <div class="mt-2 space-y-2 text-sm leading-relaxed text-rikyu" set:html={item.body} />
+            <div class="mt-2 space-y-2 text-[0.9375rem] leading-relaxed text-sumi/80" set:html={item.body} />
           </li>
         ))}
       </ul>

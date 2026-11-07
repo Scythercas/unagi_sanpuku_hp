@@ -12,7 +12,9 @@
   --color-kinari: #fbf9f4; /* 生成り：情報部の紙面 */
   --color-kinari-line: #e5e0d5; /* 紙面の罫線 */
   --color-bengara: #8c3a2b; /* 弁柄：価格・現在地・リンク */
-  --color-rikyu: #7d7a6e; /* 利休鼠：ラベル・キャプション */
+  /* 利休鼠：ラベル・キャプション。生成り地で 5.0:1（WCAG AA の 4.5:1 を満たす）。
+     以前の #7d7a6e は 4.09:1 で、小さな文字が規準を割っていた。 */
+  --color-rikyu: #6f6c61;
 
   /* 見出しはサブセット自己ホストのしっぽり明朝、以降はシステム明朝へ落とす。
      本文は追加ダウンロードなしでMac/Win双方に明朝が当たるスタック。 */
@@ -20,6 +22,12 @@
     "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", serif;
   --font-heading:
     "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", serif;
+
+  /* 動きの質感。「ふわっと止まる」減速カーブ1本と、0.3秒の基準時間に揃える。
+     拡大・影・バネ（行き過ぎて戻る）動きは老舗の落ち着きに合わないため使わない。 */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --default-transition-duration: 300ms;
+  --default-transition-timing-function: var(--ease-soft);
 }
 
 /* 店名表示用の筆文字フォント（ひらがな・カタカナ全体をサブセット済み） */
@@ -33,8 +41,8 @@
     url("/fonts/yuji-boku.ttf") format("truetype");
 }
 
-/* 見出し・タブ専用。表示に使う文字だけを含むサブセット（約14KB）。
-   見出し・タブの文言を増やしたら再生成が必要。手順は CLAUDE.md の
+/* 見出し・目次専用。表示に使う文字だけを含むサブセット（約14KB）。
+   見出し・目次の文言を増やしたら再生成が必要。手順は CLAUDE.md の
    「見出しフォントのサブセット」を参照。 */
 @font-face {
   font-family: "Shippori Mincho";
@@ -62,6 +70,26 @@ body {
   line-height: 1.9;
 }
 
+/* 目次からの移動。動きを抑えたい利用者には瞬時に移動させる */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ------------------------------------------------------------------
+   フォーカス表示。キーボード操作時だけ、弁柄の細い枠を角丸なしで出す。
+   墨地（.on-sumi の内側）では生成りの枠に替える。
+   ------------------------------------------------------------------ */
+:focus-visible {
+  outline: 2px solid var(--color-bengara);
+  outline-offset: 4px;
+}
+
+.on-sumi :focus-visible {
+  outline-color: var(--color-kinari);
+}
+
 /* ------------------------------------------------------------------
    セクション見出し（デスクトップは縦書き、モバイルは横書き）
    ------------------------------------------------------------------ */
@@ -80,85 +108,169 @@ body {
   }
 }
 
-/* ------------------------------------------------------------------
-   罫線タブ。選択状態は aria-selected だけで表現し、JS は属性の
-   付け替えのみを行う（マークアップとスクリプトでクラス名を
-   二重管理しないため）。
-   ------------------------------------------------------------------ */
-.tab {
-  font-family: var(--font-heading);
-  /* 狭い画面では字送りを詰める。セクションタブ（お品書き/佇まい/店舗案内/求人＝
-     全13文字）が 320px 幅でも一列に収まる値。 */
-  letter-spacing: 0.08em;
-  color: var(--color-rikyu);
-  border-bottom: 2px solid transparent;
-  padding-bottom: 0.6rem;
-  transition:
-    color 0.2s,
-    border-color 0.2s;
-}
-
+/* 一言紹介。デスクトップは縦組みにして品書きの冒頭のように見せる。
+   CMS で長文が入っても縦に伸び続けないよう、字数で折り返す高さを決めておく。 */
 @media (min-width: 640px) {
-  .tab {
-    letter-spacing: 0.15em;
+  .intro-vertical {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    max-height: 18em;
   }
 }
 
-.tab:hover {
-  color: var(--color-sumi);
+/* ------------------------------------------------------------------
+   目次のリンク。弁柄の下線が左から引かれる（色だけをパッと替えない）。
+   ------------------------------------------------------------------ */
+.index-link {
+  font-family: var(--font-heading);
+  letter-spacing: 0.2em;
+  background-image: linear-gradient(var(--color-bengara), var(--color-bengara));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0 1px;
+  transition:
+    color var(--default-transition-duration) var(--ease-soft),
+    background-size 0.5s var(--ease-soft);
 }
 
-.tab[aria-selected="true"] {
-  color: var(--color-sumi);
-  border-bottom-color: var(--color-bengara);
+.index-link:hover {
+  color: var(--color-bengara);
+  background-size: 100% 1px;
 }
 
 /* ------------------------------------------------------------------
    お品書きのリーダー罫（品名 ‥‥‥ 価格）
    flex の隙間を点線で埋める。品名・価格が長くても崩れない。
+   罫線用の kinari-line では点線が消えて見えるため、利休鼠を薄めて使う。
    ------------------------------------------------------------------ */
 .leader {
   flex: 1 1 auto;
   align-self: end;
-  margin-bottom: 0.35em;
-  border-bottom: 1px dotted var(--color-kinari-line);
+  margin-bottom: 0.45em;
+  border-bottom: 1px dotted color-mix(in srgb, var(--color-rikyu) 60%, transparent);
   min-width: 1.5rem;
 }
 
 /* ------------------------------------------------------------------
-   ヒーロー：動画を再生し、3秒後にうっすら暗転させながら店名を大きく表示する。
+   スクロールに合わせた出現。CSS のスクロール連動アニメーションのみで
+   実装し JS を使わない。未対応ブラウザと動きを抑えたい利用者には
+   最初から表示する（隠れたままになる経路を作らない）。
+   ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal-in var(--ease-soft) both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* ------------------------------------------------------------------
+   ヒーロー：動画を再生し、3秒後に暗転させながら店名を大きく表示する。
    スクロールはこのセクションの外に出るだけなので、待たずに下の内容へ進める。
+   暗転は鰻の照りが残る程度に留め、文字の可読性は中央の陰で確保する。
    ------------------------------------------------------------------ */
 .hero-fallback-image {
   display: none;
 }
 
+/* 店名の背後だけを落とす陰と、下端を墨へ溶かす陰の重ね掛け */
+.hero-shade {
+  background:
+    radial-gradient(
+      ellipse 60% 45% at 50% 50%,
+      color-mix(in srgb, var(--color-sumi) 55%, transparent),
+      transparent
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-sumi) 45%, transparent),
+      transparent 30%,
+      transparent 60%,
+      color-mix(in srgb, var(--color-sumi) 85%, transparent)
+    );
+}
+
+/* 下へ続くことを示す一本の罫。墨が垂れるように上から下へ流れる */
+.hero-cue {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  height: 4.5rem;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-kinari) 22%, transparent);
+}
+
+.hero-cue::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-kinari);
+  transform: scaleY(0.35);
+  transform-origin: top;
+}
+
 /* 店名が出るまでの待ち時間。変えるならこの1か所だけを触る */
 @media (prefers-reduced-motion: no-preference) {
   .hero-video,
-  .hero-reveal {
+  .hero-reveal,
+  .hero-cue {
     --hero-reveal-delay: 3s;
   }
   .hero-video {
-    animation: hero-video-dim 1s ease-in-out var(--hero-reveal-delay) forwards;
+    animation: hero-video-dim 1.2s var(--ease-soft) var(--hero-reveal-delay) forwards;
   }
   .hero-reveal {
     opacity: 0;
-    transform: scale(0.94);
-    animation: hero-reveal-in 1.2s ease-out var(--hero-reveal-delay) forwards;
+    transform: translateY(10px);
+    filter: blur(6px);
+    animation: hero-reveal-in 1.6s var(--ease-soft) var(--hero-reveal-delay) forwards;
+  }
+  .hero-cue {
+    opacity: 0;
+    animation: hero-cue-in 1s var(--ease-soft) calc(var(--hero-reveal-delay) + 1.2s) forwards;
+  }
+  .hero-cue::after {
+    animation: hero-cue-flow 2.4s var(--ease-soft) infinite;
   }
 }
 
 @keyframes hero-video-dim {
   to {
-    opacity: 0.3;
+    opacity: 0.6;
   }
 }
 
+/* 墨が紙に滲んで定まるように、ぼかしを解きながら浮かび上がらせる */
 @keyframes hero-reveal-in {
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes hero-cue-in {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hero-cue-flow {
+  from {
+    transform: translateY(-100%) scaleY(0.35);
+  }
+  to {
+    transform: translateY(100%) scaleY(0.35);
   }
 }
 

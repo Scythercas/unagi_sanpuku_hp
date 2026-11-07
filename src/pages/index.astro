@@ -11,7 +11,7 @@ import Recruit from '../components/Recruit.astro';
 import News from '../components/News.astro';
 import Footer from '../components/Footer.astro';
 import Section from '../components/Section.astro';
-import TabsScript from '../components/TabsScript.astro';
+import PageIndex from '../components/PageIndex.astro';
 import { getGalleryList, getMenuList, getNewsList, getRecruit, getShop } from '../lib/microcms';
 import { getLocalImage, imageMap } from '../lib/images';
 import { groupGalleryByType, groupMenuByCategory } from '../lib/content';
@@ -44,13 +44,14 @@ const description =
 const menuGroups = groupMenuByCategory(menu);
 const galleryGroups = groupGalleryByType(gallery);
 
-// ラベルはカタカナ（メニュー/ギャラリー）ではなく和語に寄せ、老舗の語彙で統一する
-const sectionTabs = [
+// ラベルはカタカナ（メニュー/ギャラリー）ではなく和語に寄せ、老舗の語彙で統一する。
+// 中身の無いセクション・非公開の求人はそもそも出さない（目次にも載せない）。
+const sections = [
   menuGroups.length > 0 ? { id: 'menu', label: 'お品書き' } : null,
   galleryGroups.length > 0 ? { id: 'gallery', label: '佇まい' } : null,
   { id: 'access', label: '店舗案内' },
   recruit.isOpen ? { id: 'recruit', label: '求人' } : null,
-].filter((tab): tab is { id: string; label: string } => tab !== null);
+].filter((section): section is { id: string; label: string } => section !== null);
 ---
 
 <BaseLayout title={title} description={description} ogImageUrl={ogImageUrl}>
@@ -58,52 +59,21 @@ const sectionTabs = [
 
   <Hero shopName={shop.name} heroImage={heroImage} heroAlt={shop.name} />
   <Intro catchcopy={shop.catchcopy} />
+  <PageIndex items={sections} />
 
-  <Section>
-    <div data-tabs>
-      {/* 上位のセクションタブ。中央揃えをやめ、品書きの見出しのように左から並べる。
-          最上位の導線なので折り返させず、狭い画面でも必ず一列に収める。 */}
-      <div
-        class="mb-16 flex flex-nowrap gap-x-3 border-b border-kinari-line sm:gap-x-10"
-        role="tablist"
-      >
-        {
-          sectionTabs.map((tab, i) => (
-            <button
-              type="button"
-              role="tab"
-              id={`section-tab-${tab.id}`}
-              aria-controls={`section-panel-${tab.id}`}
-              aria-selected={i === 0 ? 'true' : 'false'}
-              data-tab-button
-              data-target={`section-panel-${tab.id}`}
-              class="tab -mb-px whitespace-nowrap text-base sm:text-lg"
-            >
-              {tab.label}
-            </button>
-          ))
-        }
-      </div>
-      {
-        sectionTabs.map((tab, i) => (
-          <div
-            id={`section-panel-${tab.id}`}
-            role="tabpanel"
-            aria-labelledby={`section-tab-${tab.id}`}
-            data-tab-panel
-            hidden={i !== 0}
-          >
-            {tab.id === 'menu' && <Menu groups={menuGroups} />}
-            {tab.id === 'gallery' && <Gallery groups={galleryGroups} />}
-            {tab.id === 'access' && <ShopInfo shop={shop} />}
-            {tab.id === 'recruit' && <Recruit recruit={recruit} />}
-          </div>
-        ))
-      }
-    </div>
-  </Section>
-  <TabsScript />
-
+  {/* 臨時休業などは来店判断に直結するため、品書きより前に置く */}
   <News items={news} />
+
+  {
+    sections.map((section) => (
+      <Section id={section.id} label={section.label}>
+        {section.id === 'menu' && <Menu groups={menuGroups} />}
+        {section.id === 'gallery' && <Gallery groups={galleryGroups} />}
+        {section.id === 'access' && <ShopInfo shop={shop} />}
+        {section.id === 'recruit' && <Recruit recruit={recruit} />}
+      </Section>
+    ))
+  }
+
   <Footer shop={shop} />
 </BaseLayout>

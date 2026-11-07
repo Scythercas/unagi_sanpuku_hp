@@ -16,10 +16,10 @@ const rows = [
 ].filter((row): row is { label: string; value: string } => Boolean(row.value));
 ---
 
-<dl class="max-w-2xl text-sm sm:text-base">
+<dl class="reveal max-w-2xl border-t border-kinari-line text-[0.9375rem] sm:text-base">
   {
     rows.map((row) => (
-      <div class="grid grid-cols-[6.5rem_1fr] gap-4 border-b border-kinari-line py-4">
+      <div class="grid grid-cols-[6rem_1fr] gap-4 border-b border-kinari-line py-4 sm:grid-cols-[6.5rem_1fr]">
         <dt class="text-rikyu">{row.label}</dt>
         <dd class="whitespace-pre-line text-sumi">{row.value}</dd>
       </div>

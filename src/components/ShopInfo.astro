@@ -36,29 +36,34 @@ const rows: { label: string; value: string }[] = [
 ];
 ---
 
-<div class="grid gap-12 sm:grid-cols-2 sm:gap-10">
-  <dl class="text-sm sm:text-base">
-    {
-      rows.map((row) => (
-        <div class="grid grid-cols-[6.5rem_1fr] gap-4 border-b border-kinari-line py-4">
-          <dt class="text-rikyu">{row.label}</dt>
-          <dd class="whitespace-pre-line text-sumi">{row.value}</dd>
-        </div>
-      ))
-    }
-    <div class="grid grid-cols-[6.5rem_1fr] gap-4 border-b border-kinari-line py-4">
-      <dt class="text-rikyu">電話</dt>
-      <dd>
-        <TelLink tel={shop.tel} class="text-lg text-bengara tabular-nums">
-          {shop.tel}
-        </TelLink>
-      </dd>
+<div class="grid gap-12 md:grid-cols-2 md:gap-10">
+  <div class="reveal">
+    {/* 電話はこのサイトで唯一の予約導線。表の一行に埋もれさせず、表の前に大きく置く */}
+    <div class="border-y border-kinari-line py-6">
+      <p class="text-xs tracking-[0.3em] text-rikyu">ご予約・お問い合わせ</p>
+      <TelLink
+        tel={shop.tel}
+        class="mt-1 inline-block py-1 text-3xl text-bengara tabular-nums transition-opacity hover:opacity-70 sm:text-4xl"
+      >
+        {shop.tel}
+      </TelLink>
     </div>
-  </dl>
-  <div>
+
+    <dl class="text-[0.9375rem] sm:text-base">
+      {
+        rows.map((row) => (
+          <div class="grid grid-cols-[6rem_1fr] gap-4 border-b border-kinari-line py-4 sm:grid-cols-[6.5rem_1fr]">
+            <dt class="text-rikyu">{row.label}</dt>
+            <dd class="whitespace-pre-line text-sumi tabular-nums">{row.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+  <div class="reveal">
     <iframe
       src={mapSrc}
-      class="h-80 w-full sm:h-full sm:min-h-80"
+      class="h-80 w-full md:h-full md:min-h-96"
       style="border:0"
       loading="lazy"
       referrerpolicy="no-referrer-when-downgrade"
