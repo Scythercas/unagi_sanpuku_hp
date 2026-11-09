@@ -234,7 +234,7 @@ Astro 側の最適化：
 - `docs/CONTENT-CHECKLIST.md` … 顧客確認・素材の未確定事項
 - `docs/CONTENT-DRAFT.md` … microCMS の現在の登録内容（コンテンツ登録状況）
 - `docs/MENU.md` … お品書き全品（品名・価格・ひとこと・カテゴリ・表示順）
-- `docs/TODO.md` … 打合せで決まった残作業
+- `docs/TODO.md` … 公開までの残作業（ロードマップ。打合せの決定事項もここに積む）
 
 ## 未確定プレースホルダ（実装時に確定値へ置換）
 
