@@ -46,14 +46,16 @@ const posterSrc = heroImage
     )
   }
 
-  <div class="absolute inset-0 bg-gradient-to-b from-sumi/60 via-sumi/25 to-sumi/80"></div>
+  <div class="hero-shade absolute inset-0"></div>
 
   <div class="hero-reveal relative z-10 px-5 text-center">
-    <p class="section-label text-xs text-sumi-weak sm:text-sm">北高崎 うなぎ</p>
+    <p class="section-label text-sm text-kinari/80 sm:text-base">北高崎 うなぎ</p>
     {/* 紙面へ続く一本の罫。弁柄はここと本編の区切りだけに使う */}
     <div class="mx-auto my-7 h-px w-10 bg-bengara"></div>
     <h1 class="font-brush text-6xl leading-none tracking-wide sm:text-8xl">
       {shopName}
     </h1>
   </div>
+
+  <div class="hero-cue" aria-hidden="true"></div>
 </section>
