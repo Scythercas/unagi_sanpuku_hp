@@ -1,0 +1,37 @@
+---
+export interface Props {
+  url: string;
+  class?: string;
+}
+
+const { url, class: className } = Astro.props;
+
+// URL の末尾からアカウント名を取り出して「@アカウント名」で見せる（取れなければ「Instagram」）
+const handle = new URL(url).pathname.split('/').filter(Boolean)[0];
+const label = handle ? `@${handle}` : 'Instagram';
+---
+
+<a
+  href={url}
+  target="_blank"
+  rel="noopener noreferrer"
+  class:list={['inline-flex items-center gap-2', className]}
+>
+  {/* Instagram のグリフ。色は文字色（currentColor）に従う */}
+  <svg
+    viewBox="0 0 24 24"
+    class="h-[1.25em] w-[1.25em] flex-none"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" />
+    <circle cx="12" cy="12" r="4.25" />
+    <circle cx="17.6" cy="6.4" r="0.6" fill="currentColor" stroke="none" />
+  </svg>
+  <span>{label}</span>
+  <span class="sr-only">（Instagram・新しいタブで開きます）</span>
+</a>

@@ -1,12 +1,12 @@
 # 設計書 — さんぷく 店舗紹介サイト
 
-最終更新：着手時に日付を記入 / 対象：開発者・Claude・引き継ぎ担当
+最終更新：2026-10-07 / 対象：開発者・Claude・引き継ぎ担当
 
 ## 1. 概要と目的
 
 群馬県・北高崎のうな重／うな丼店「さんぷく」の店舗紹介サイト。落ち着いた雰囲気で、店の情報・メニュー・写真・採用を見せる。集客の土台（検索・地図・SNS からの流入受け皿）を作ることが目的。
 
-- Instagram：`{{INSTAGRAM_URL}}`（既定 https://www.instagram.com/sanpuku_unagi ）
+- Instagram：<https://www.instagram.com/unagi_sampuku>（アカウント名 `unagi_sampuku`）
 
 ## 2. 前提と制約
 
@@ -64,9 +64,9 @@
 
 microCMS の Hobby は **API 5 個まで**。以下ちょうど 5 個で確定（詳細は `docs/SCHEMA.md`）。
 
-1. `shop`（オブジェクト）… 店名・営業時間・定休日・住所・電話・駐車場・席数・テイクアウト/出前・Instagram 等の単一情報
-2. `menu`（リスト）… うな重/うな丼の松竹梅、宴会・コース、一品、テイクアウト、ドリンク
-3. `gallery`（リスト）… 外観・内装・調理・料理の写真
+1. `shop`（オブジェクト）… 店名・営業時間・定休日・住所・電話・駐車場・席数・お支払い・テイクアウト/出前・Instagram 等の単一情報
+2. `menu`（リスト）… 店頭の紙のメニューの全品（品名は店頭表記）。サイトでは「御食事・一品料理・御飲物」の3分類で表示（一覧は `docs/MENU.md`）
+3. `gallery`（リスト）… 外観・内装・調理・料理の写真（サイトのタブ名は「内装」を「内観」と表示）
 4. `recruit`（オブジェクト）… バイト募集（`isOpen` で表示切替）
 5. `news`（リスト）… 臨時休業・繁忙期営業案内・イベント等
 
@@ -93,7 +93,7 @@ microCMS の Hobby は **API 5 個まで**。以下ちょうど 5 個で確定�
 
 ## 9. ドメイン・DNS・HTTPS
 
-- ドメイン：`{{DOMAIN}}`（既定 `sanpuku-unagi.com`、Instagram の綴りと一致。**アンダースコアは不可**。要確定は `docs/CONTENT-CHECKLIST.md`）。
+- ドメイン：`{{DOMAIN}}`（既定 `sanpuku-unagi.com`。**アンダースコアは不可**。要確定は `docs/CONTENT-CHECKLIST.md`）。Instagram のアカウント名は `unagi_sampuku` で、既定のドメインとは語順も綴り（sanpuku／sampuku）も異なる。揃えるかどうかはドメイン購入時に決める。
 - DNS（顧客レジストラ）：
   - apex（`{{DOMAIN}}`）→ GitHub Pages の A レコード 4 本（`185.199.108.153` / `.109.153` / `.110.153` / `.111.153`）。IPv6 の AAAA も併記可。
   - `www` → `CNAME` で `Scythercas.github.io`。

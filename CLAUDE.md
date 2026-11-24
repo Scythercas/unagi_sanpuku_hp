@@ -58,7 +58,7 @@
 │   │   ├─ content.ts            # menu/gallery のカテゴリ/種別グルーピング
 │   │   └─ config.ts             # GA4 測定 ID 等のハードコード設定
 │   ├─ layouts/
-│   ├─ components/                # Hero/Menu/Gallery/ShopInfo/Recruit/News/Footer/TabsScript 等
+│   ├─ components/                # Hero/Menu/Gallery/ShopInfo/Recruit/News/Footer/TabsScript/InstagramLink 等
 │   └─ pages/
 │       ├─ index.astro           # メインの1ページ（セクション構成）
 │       ├─ privacy.astro         # プライバシーポリシー（GA 利用のため必須）
@@ -124,7 +124,7 @@ Astro 側の最適化：
 - セクション見出しは `Section.astro` の `label` に渡す。デスクトップは縦書き（`writing-mode: vertical-rl`）、640px 未満は横書きに切り替わる。
 - メニューは「お品書き」として、品名 ‥‥ 価格 を `.leader`（点線）で結ぶ。
 - 価格・電話番号・日付には `tabular-nums` を付けて桁を揃える。
-- タブやセクションの見出しはカタカナ（メニュー／ギャラリー）ではなく**和語**（お品書き／佇まい／店舗案内／求人）を使う。
+- タブやセクションの見出しはカタカナ（メニュー／ギャラリー）ではなく**和語**（店舗案内／お品書き／写真帖／求人）を使う。
 
 ### 店章（favicon / apple-touch-icon）
 
@@ -142,7 +142,7 @@ Astro 側の最適化：
 
 **見出し・タブの文言を増やしたら再生成が必要**（未収録の文字はシステム明朝にフォールバックし、字面が混ざる）。手順：
 
-1. `src/pages/index.astro` の `sectionTabs`、`MENU_CATEGORIES`、`GALLERY_TYPES`、ヒーローの小見出し、下層ページ見出しに含まれる文字を集める。
+1. `src/pages/index.astro` の `sectionTabs`、`src/lib/content.ts` の `MENU_SECTIONS` の `label` と `GALLERY_TAB_LABELS`、`GALLERY_TYPES`、ヒーローの小見出し、下層ページ見出しに含まれる文字を集める。
 2. Google Fonts の `css2?family=Shippori+Mincho:wght@500&text=<文字列>` を取得し、`url(...)` の woff2 を `public/fonts/shippori-mincho-subset.woff2` へ保存。
 3. 併せて返る `unicode-range` を `global.css` の `@font-face` にそのまま反映する。
 
@@ -157,13 +157,14 @@ Astro 側の最適化：
 
 1. ヒーロー：3秒ほどの調理動画イントロ→筆文字フォント（自己ホスト WOFF2）で店名を大きくリビール（待ち時間は `global.css` の `--hero-reveal-delay` 1か所で決まる）。スクロールすればいつでも待たずに下へ進める（動画は CSS アニメーションのみで暗転・リビールし、JS 不使用）。**電話 CTA ボタンはヒーローには置かない**。`prefers-reduced-motion` 時は動画の代わりに静止画＋店名を最初から表示。
 2. 一言紹介（`shop.catchcopy`。空なら非表示）
-3. お品書き／佇まい／店舗案内／求人を**セクション単位のタブで切り替え**（`data-tabs` 属性＋`TabsScript.astro` の素の JS。ネストしたタブも `closest('[data-tabs]')` で自グループのみ制御）。存在しない・非公開のタブはそもそも生成しない：
-   - お品書き：`menu` をカテゴリでグルーピングし、内部にもカテゴリ別タブを持つ。価格は数値を「1,800円」等に整形。
-   - 佇まい：`gallery` を種別（外観/内装/調理/料理）でグルーピングし、内部にも種別タブを持つ。
-   - 店舗案内：住所・営業時間・定休日・駐車場・席数、Google マップ iframe、`tel:` リンク。
+3. 店舗案内／お品書き／写真帖／求人を**セクション単位のタブで切り替え**（来店に直結する店舗案内を最初に開く）（`data-tabs` 属性＋`TabsScript.astro` の素の JS。ネストしたタブも `closest('[data-tabs]')` で自グループのみ制御）。存在しない・非公開のタブはそもそも生成しない：
+   - お品書き：店頭の品書きに合わせ「御食事・一品料理・御飲物」の3分類で内部タブを持つ（`content.ts` の `MENU_SECTIONS` が microCMS の細分類カテゴリをまとめる）。並びは「細分類の順 → `order`」。価格は数値を「1,800円」等に整形。
+   - 写真帖：`gallery` を種別（外観/内装/調理/料理）でグルーピングし、内部にも種別タブを持つ。タブ名は写真を預かった Google Drive のフォルダ名に合わせ、表示だけ「内装」→「内観」と読み替える（`galleryTabLabel`）。
+     写真は切り抜かず、高さ揃えの横並び（`.album`。縦横比を `--r` で渡す）で並べる。枠や台紙は付けない。
+   - 店舗案内：営業時間・定休日・住所・駐車場・席数・お支払い・テイクアウト（対応時のみ）・出前（対応時のみ）・ご案内、`tel:` リンク、Instagram（アイコン付き・`InstagramLink.astro`）、Google マップ iframe。
    - 求人：`recruit.isOpen` が true のときのみタブ自体を表示。
 4. お知らせ（`news`。臨時休業等。空なら非表示）
-5. フッター（墨地。店名・住所・営業時間・**電話**・Instagram・コピーライト・プライバシーポリシー）
+5. フッター（墨地。情報は最低限：店名・**電話**・Instagram（アイコン付き）・コピーライト・プライバシーポリシー。住所・営業時間は店舗案内に任せる）
 
 `/privacy` に GA/Cookie に関するプライバシーポリシーを置く。
 
@@ -231,10 +232,12 @@ Astro 側の最適化：
 - `docs/SETUP.md` … 環境構築手順
 - `docs/OPERATIONS.md` … 運用・引き継ぎ
 - `docs/CONTENT-CHECKLIST.md` … 顧客確認・素材の未確定事項
-- `docs/CONTENT-DRAFT.md` … microCMS 投入用コンテンツ下書きと入力進捗
+- `docs/CONTENT-DRAFT.md` … microCMS の現在の登録内容（コンテンツ登録状況）
+- `docs/MENU.md` … お品書き全品（品名・価格・ひとこと・カテゴリ・表示順）
+- `docs/TODO.md` … 公開までの残作業（ロードマップ。打合せの決定事項もここに積む）
 
 ## 未確定プレースホルダ（実装時に確定値へ置換）
 
-`{{DOMAIN}}`（既定 sanpuku-unagi.com・**ドメイン未購入のため未確定**。購入までコードは既定値のまま運用）、店舗の駐車場・席数・テイクアウト/出前対応の有無等（`docs/CONTENT-CHECKLIST.md` 参照）。
+`{{DOMAIN}}`（既定 sanpuku-unagi.com・**ドメイン未購入のため未確定**。購入までコードは既定値のまま運用。Instagram のアカウント名は `unagi_sampuku` で既定ドメインと綴りが異なる）。その他の未確定事項は `docs/CONTENT-CHECKLIST.md` と `docs/TODO.md` を参照。
 
 確定済み: `{{GITHUB_USERNAME}}` = `Scythercas`, `{{REPO_NAME}}` = `unagi_sanpuku_hp`（<https://github.com/Scythercas/unagi_sanpuku_hp>）。`{{MICROCMS_SERVICE_DOMAIN}}` = `unagisanpuku`。`{{GA4_MEASUREMENT_ID}}` = `G-X7TDGRCV1T`（`src/lib/config.ts` にハードコード済み）。

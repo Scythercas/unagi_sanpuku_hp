@@ -22,7 +22,13 @@ export type Shop = {
   parking?: string;
   seatsCounter?: number;
   seatsTable?: number;
+  /** テーブル座敷の卓の内訳（例：6人×2、4人×4）。あれば seatsTable より優先して表示 */
+  seatsTableDetail?: string;
   takeout?: boolean;
+  /** テイクアウトの補足（例：生もの以外）。「対応（…）」の括弧内に出す */
+  takeoutNote?: string;
+  /** お支払い方法（例：現金のみ） */
+  payment?: string;
   delivery?: boolean;
   instagramUrl?: string;
   accessNote?: string;

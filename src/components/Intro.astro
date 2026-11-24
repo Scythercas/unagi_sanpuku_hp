@@ -8,13 +8,14 @@ const { catchcopy } = Astro.props;
 
 {
   catchcopy && (
-    <section id="about" class="bg-kinari px-5 py-28 sm:py-36">
+    <section id="about" class="bg-kinari px-5 pt-28 sm:pt-36">
       <div class="mx-auto max-w-2xl">
         <p class="whitespace-pre-line text-center text-lg leading-[2.4] tracking-wide text-sumi sm:text-xl">
           {catchcopy}
         </p>
-        {/* 一言紹介と本編を隔てる一本の罫。老舗の品書きの区切りに倣う */}
-        <div class="mx-auto mt-16 h-px w-16 bg-bengara" />
+        {/* 一言紹介と本編を隔てる一本の罫。老舗の品書きの区切りに倣う。
+            罫より下の余白は続く Section の py に任せ、同じ生成り地で余白が二重にならないようにする */}
+        <div class="mx-auto mt-12 h-px w-16 bg-bengara sm:mt-14" />
       </div>
     </section>
   )
